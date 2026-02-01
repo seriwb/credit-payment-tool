@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import {
   Bar,
   BarChart,
@@ -16,12 +15,10 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart';
-import type { SourceData } from '../_lib/actions';
+import type { SourceData } from '../../_lib/actions';
 
 type Props = {
   data: SourceData[];
-  startMonth?: string;
-  endMonth?: string;
 };
 
 const chartConfig = {
@@ -31,15 +28,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function SourceChart({ data, startMonth, endMonth }: Props) {
-  // 詳細ページへのリンクを生成
-  const detailUrl = (() => {
-    const params = new URLSearchParams();
-    if (startMonth) params.set('start', startMonth);
-    if (endMonth) params.set('end', endMonth);
-    const query = params.toString();
-    return `/analytics/sources${query ? `?${query}` : ''}`;
-  })();
+export function SourcesChart({ data }: Props) {
+  // TOP20を表示
+  const chartData = data.slice(0, 20);
+
   const formatAmount = (amount: number) => {
     if (amount >= 10000) {
       return `${(amount / 10000).toFixed(1)}万`;
@@ -50,17 +42,11 @@ export function SourceChart({ data, startMonth, endMonth }: Props) {
   if (data.length === 0) {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">支払い元別 TOP10</CardTitle>
-          <Link
-            href={detailUrl}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            すべて表示 →
-          </Link>
+        <CardHeader>
+          <CardTitle className="text-base">支払い元別 TOP20</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+          <div className="h-[500px] flex items-center justify-center text-muted-foreground">
             データがありません
           </div>
         </CardContent>
@@ -68,22 +54,26 @@ export function SourceChart({ data, startMonth, endMonth }: Props) {
     );
   }
 
+  // データ件数に応じてグラフの高さを調整
+  const chartHeight = Math.max(300, chartData.length * 30);
+
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base">支払い元別 TOP10</CardTitle>
-        <Link
-          href={detailUrl}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          すべて表示 →
-        </Link>
+      <CardHeader>
+        <CardTitle className="text-base">
+          支払い元別 TOP20
+          {data.length > 20 && (
+            <span className="text-sm font-normal text-muted-foreground ml-2">
+              （全{data.length}件中）
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+        <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
           <ResponsiveContainer>
             <BarChart
-              data={data}
+              data={chartData}
               layout="vertical"
               margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
             >
