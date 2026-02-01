@@ -5,7 +5,7 @@ export default async function ImportPage() {
   const history = await getImportHistory();
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div>
         <h2 className="text-2xl font-bold">CSVインポート</h2>
         <p className="text-muted-foreground mt-1">
