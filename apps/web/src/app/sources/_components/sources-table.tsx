@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useTransition } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -184,7 +185,14 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
                       }
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{source.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link
+                      href={`/sources/${source.id}`}
+                      className="hover:underline text-primary"
+                    >
+                      {source.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     <Select
                       value={source.categoryId || 'none'}
