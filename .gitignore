@@ -1,0 +1,14 @@
+*.bk
+.vscode
+.DS_Store
+*.log
+/node_modules
+.env
+.env.production
+
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions

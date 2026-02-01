@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: gold-point-tool_postgres
+    ports:
+      - 35432:5432
+    volumes:
+      - ./infra/postgres/sql/:/docker-entrypoint-initdb.d/
+      - postgres-data:/var/lib/postgres
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    networks:
+      - gold-point-tool-network
+
+volumes:
+  postgres-data:
+    external: false
+
+networks:
+  gold-point-tool-network:
+    driver: bridge

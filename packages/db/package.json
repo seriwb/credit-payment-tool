@@ -1,0 +1,52 @@
+{
+  "name": "@gold-point-tool/db",
+  "version": "0.1.0",
+  "private": true,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "yarn lint --fix",
+    "dev": "prisma migrate dev",
+    "reset": "prisma migrate reset",
+    "pull": "prisma db pull",
+    "push": "prisma db push",
+    "seed": "prisma db seed",
+    "generate": "prisma generate",
+    "studio": "prisma studio",
+    "deploy": "prisma migrate deploy",
+    "resolve": "prisma migrate resolve",
+    "status": "prisma migrate status",
+    "ncu": "ncu",
+    "ncuu": "ncu -u",
+    "ncum": "ncu --target minor",
+    "ncumu": "ncu --target minor -u"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.3.0",
+    "@prisma/client": "7.3.0",
+    "dotenv": "17.2.3",
+    "pg": "8.18.0",
+    "prisma": "7.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "25.1.0",
+    "@types/pg": "8.16.0",
+    "@typescript-eslint/eslint-plugin": "8.54.0",
+    "@typescript-eslint/parser": "8.54.0",
+    "eslint": "9.39.2",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-react": "7.37.5",
+    "import-sort-parser-typescript": "6.0.0",
+    "npm-check-updates": "19.3.2",
+    "prettier": "3.8.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3"
+  }
+}

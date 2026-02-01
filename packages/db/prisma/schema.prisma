@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// インポート済みファイル管理
+model ImportedFile {
+  id         String    @id @default(cuid())
+  fileName   String    @unique
+  yearMonth  String // YYYYMM形式
+  importedAt DateTime  @default(now())
+  payments   Payment[]
+
+  @@index([yearMonth])
+  @@map("imported_files")
+}
+
+// 支払い元マスタ
+model PaymentSource {
+  id         String    @id @default(cuid())
+  name       String    @unique
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  payments   Payment[]
+
+  @@index([categoryId])
+  @@map("payment_sources")
+}
+
+// カテゴリマスタ
+model Category {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  displayOrder   Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  paymentSources PaymentSource[]
+
+  @@map("categories")
+}
+
+// 支払い明細
+model Payment {
+  id              String        @id @default(cuid())
+  importedFileId  String
+  importedFile    ImportedFile  @relation(fields: [importedFileId], references: [id], onDelete: Cascade)
+  paymentSourceId String
+  paymentSource   PaymentSource @relation(fields: [paymentSourceId], references: [id])
+  paymentDate     DateTime
+  amount          Int
+  quantity        Int           @default(1)
+  yearMonth       String // YYYYMM形式（集計用）
+  createdAt       DateTime      @default(now())
+
+  @@index([paymentSourceId])
+  @@index([yearMonth])
+  @@index([paymentDate])
+  @@index([importedFileId])
+  @@map("payments")
+}

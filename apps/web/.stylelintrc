@@ -1,0 +1,18 @@
+{
+  "plugins": ["stylelint-prettier"],
+  "extends": "stylelint-config-standard-scss",
+  "rules": {
+    "prettier/prettier": true,
+    "scss/dollar-variable-pattern": null,
+    "scss/double-slash-comment-empty-line-before": null,
+    "selector-class-pattern": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "property-no-vendor-prefix": null,
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["composes", "compose-with"]
+      }
+    ]
+  }
+}
