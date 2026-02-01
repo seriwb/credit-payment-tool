@@ -114,7 +114,7 @@ export function SourcesDetailView({
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[200px]">
                   <SelectItem value="all">指定なし</SelectItem>
                   {yearMonths.map((ym) => (
                     <SelectItem key={ym} value={ym}>
@@ -131,7 +131,7 @@ export function SourcesDetailView({
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[200px]">
                   <SelectItem value="all">指定なし</SelectItem>
                   {yearMonths.map((ym) => (
                     <SelectItem key={ym} value={ym}>
