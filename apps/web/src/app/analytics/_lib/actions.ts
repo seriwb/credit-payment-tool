@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 // 月別集計データ
 export type MonthlyData = {
@@ -11,6 +11,7 @@ export type MonthlyData = {
 
 // 支払い元別集計データ
 export type SourceData = {
+  sourceId: string;
   sourceName: string;
   totalAmount: number;
   paymentCount: number;
@@ -26,10 +27,7 @@ export type CategoryData = {
 /**
  * 月別の支払い集計を取得
  */
-export async function getMonthlyAnalytics(
-  startYearMonth?: string,
-  endYearMonth?: string
-): Promise<MonthlyData[]> {
+export async function getMonthlyAnalytics(startYearMonth?: string, endYearMonth?: string): Promise<MonthlyData[]> {
   const where: { yearMonth?: { gte?: string; lte?: string } } = {};
 
   if (startYearMonth || endYearMonth) {
@@ -39,11 +37,11 @@ export async function getMonthlyAnalytics(
   }
 
   const data = await prisma.payment.groupBy({
-    by: ['yearMonth'],
+    by: ["yearMonth"],
     where,
     _sum: { amount: true },
     _count: { id: true },
-    orderBy: { yearMonth: 'asc' },
+    orderBy: { yearMonth: "asc" },
   });
 
   return data.map((item) => ({
@@ -59,7 +57,7 @@ export async function getMonthlyAnalytics(
 export async function getSourceAnalytics(
   startYearMonth?: string,
   endYearMonth?: string,
-  limit: number = 10
+  limit = 10
 ): Promise<SourceData[]> {
   const where: { yearMonth?: { gte?: string; lte?: string } } = {};
 
@@ -70,11 +68,11 @@ export async function getSourceAnalytics(
   }
 
   const data = await prisma.payment.groupBy({
-    by: ['paymentSourceId'],
+    by: ["paymentSourceId"],
     where,
     _sum: { amount: true },
     _count: { id: true },
-    orderBy: { _sum: { amount: 'desc' } },
+    orderBy: { _sum: { amount: "desc" } },
     take: limit,
   });
 
@@ -88,7 +86,8 @@ export async function getSourceAnalytics(
   const sourceMap = new Map(sources.map((s) => [s.id, s.name]));
 
   return data.map((item) => ({
-    sourceName: sourceMap.get(item.paymentSourceId) ?? '不明',
+    sourceId: item.paymentSourceId,
+    sourceName: sourceMap.get(item.paymentSourceId) ?? "不明",
     totalAmount: item._sum.amount ?? 0,
     paymentCount: item._count.id,
   }));
@@ -97,10 +96,7 @@ export async function getSourceAnalytics(
 /**
  * カテゴリ別の集計を取得
  */
-export async function getCategoryAnalytics(
-  startYearMonth?: string,
-  endYearMonth?: string
-): Promise<CategoryData[]> {
+export async function getCategoryAnalytics(startYearMonth?: string, endYearMonth?: string): Promise<CategoryData[]> {
   const where: { yearMonth?: { gte?: string; lte?: string } } = {};
 
   if (startYearMonth || endYearMonth) {
@@ -125,7 +121,7 @@ export async function getCategoryAnalytics(
   const categoryMap = new Map<string, { totalAmount: number; paymentCount: number }>();
 
   for (const payment of payments) {
-    const categoryName = payment.paymentSource.category?.name ?? '未分類';
+    const categoryName = payment.paymentSource.category?.name ?? "未分類";
 
     const current = categoryMap.get(categoryName) ?? {
       totalAmount: 0,
@@ -157,8 +153,8 @@ export async function getYearMonthRange(): Promise<{
 }> {
   const yearMonths = await prisma.payment.findMany({
     select: { yearMonth: true },
-    distinct: ['yearMonth'],
-    orderBy: { yearMonth: 'asc' },
+    distinct: ["yearMonth"],
+    orderBy: { yearMonth: "asc" },
   });
 
   if (yearMonths.length === 0) {

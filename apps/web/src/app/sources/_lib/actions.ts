@@ -1,6 +1,8 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import type { Prisma } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { generateSearchPatterns } from "./functions";
 
 // 支払い元詳細の型
 export type PaymentSourceDetail = {
@@ -28,17 +30,22 @@ export type SourceFilterParams = {
 /**
  * 支払い元一覧を取得（フィルター対応）
  */
-export async function getPaymentSources(
-  filter?: SourceFilterParams
-): Promise<PaymentSourceDetail[]> {
+export async function getPaymentSources(filter?: SourceFilterParams): Promise<PaymentSourceDetail[]> {
   // フィルター条件を構築
-  const where: {
-    name?: { startsWith: string; mode: 'insensitive' };
-    categoryId?: string | null;
-  } = {};
+  const where: Prisma.PaymentSourceWhereInput = {};
 
   if (filter?.name) {
-    where.name = { startsWith: filter.name, mode: 'insensitive' };
+    const patterns = generateSearchPatterns(filter.name);
+
+    if (patterns.length === 1) {
+      // パターンが1つの場合は従来通り
+      where.name = { startsWith: patterns[0], mode: "insensitive" };
+    } else {
+      // 複数パターンの場合はOR条件（半角/全角両方に対応）
+      where.OR = patterns.map((pattern) => ({
+        name: { startsWith: pattern, mode: "insensitive" },
+      }));
+    }
   }
 
   // categoryIdが明示的に指定されている場合のみフィルター
@@ -57,7 +64,7 @@ export async function getPaymentSources(
         },
       },
     },
-    orderBy: { name: 'asc' },
+    orderBy: { name: "asc" },
   });
 
   return sources.map((source) => {
@@ -90,7 +97,7 @@ export async function getCategoryOptions(): Promise<CategoryOption[]> {
       id: true,
       name: true,
     },
-    orderBy: { displayOrder: 'asc' },
+    orderBy: { displayOrder: "asc" },
   });
 
   return categories;
@@ -109,11 +116,11 @@ export async function updateSourceCategory(
       data: { categoryId },
     });
 
-    return { success: true, message: 'カテゴリを更新しました' };
+    return { success: true, message: "カテゴリを更新しました" };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '更新に失敗しました',
+      message: error instanceof Error ? error.message : "更新に失敗しました",
     };
   }
 }
@@ -135,7 +142,7 @@ export async function bulkUpdateSourceCategory(
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '更新に失敗しました',
+      message: error instanceof Error ? error.message : "更新に失敗しました",
     };
   }
 }
