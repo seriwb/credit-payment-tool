@@ -1,21 +1,35 @@
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { SourcePaymentsTable } from './source-payments-table';
-import type { SourceDetailResult } from '../_lib/actions';
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { SourceDetailResult } from "../_lib/actions";
+import { SourcePaymentsTable } from "./source-payments-table";
+
+type ReturnParams = {
+  name?: string;
+  categoryId?: string | null;
+};
 
 type Props = {
   data: SourceDetailResult;
+  returnParams?: ReturnParams;
 };
+
+/**
+ * 一覧ページへの戻りリンクURLを構築
+ */
+function buildBackLink(returnParams?: ReturnParams): string {
+  const params = new URLSearchParams();
+  if (returnParams?.name) {
+    params.set("name", returnParams.name);
+  }
+  if (returnParams?.categoryId !== undefined) {
+    params.set("categoryId", returnParams.categoryId === null ? "null" : returnParams.categoryId);
+  }
+  const query = params.toString();
+  return `/sources${query ? `?${query}` : ""}`;
+}
 
 /**
  * 金額をフォーマット
@@ -24,14 +38,14 @@ function formatAmount(amount: number): string {
   return `¥${amount.toLocaleString()}`;
 }
 
-export function SourceDetailView({ data }: Props) {
+export function SourceDetailView({ data, returnParams }: Props) {
   const { source, payments, summary, yearlyTotals } = data;
 
   return (
     <div className="space-y-6">
       {/* 戻るリンク */}
       <Link
-        href="/sources"
+        href={buildBackLink(returnParams)}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -56,25 +70,19 @@ export function SourceDetailView({ data }: Props) {
         <Card>
           <CardContent className="pt-6">
             <div className="text-sm text-muted-foreground">支払い件数</div>
-            <div className="text-2xl font-bold">
-              {summary.paymentCount.toLocaleString()}件
-            </div>
+            <div className="text-2xl font-bold">{summary.paymentCount.toLocaleString()}件</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-sm text-muted-foreground">合計金額</div>
-            <div className="text-2xl font-bold font-mono">
-              {formatAmount(summary.totalAmount)}
-            </div>
+            <div className="font-mono text-2xl font-bold">{formatAmount(summary.totalAmount)}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-sm text-muted-foreground">平均金額</div>
-            <div className="text-2xl font-bold font-mono">
-              {formatAmount(summary.averageAmount)}
-            </div>
+            <div className="font-mono text-2xl font-bold">{formatAmount(summary.averageAmount)}</div>
           </CardContent>
         </Card>
       </div>
@@ -98,12 +106,8 @@ export function SourceDetailView({ data }: Props) {
                 {yearlyTotals.map((yearly) => (
                   <TableRow key={yearly.year}>
                     <TableCell className="font-medium">{yearly.year}年</TableCell>
-                    <TableCell className="text-right">
-                      {yearly.paymentCount.toLocaleString()}件
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatAmount(yearly.totalAmount)}
-                    </TableCell>
+                    <TableCell className="text-right">{yearly.paymentCount.toLocaleString()}件</TableCell>
+                    <TableCell className="text-right font-mono">{formatAmount(yearly.totalAmount)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

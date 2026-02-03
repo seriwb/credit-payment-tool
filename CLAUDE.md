@@ -76,6 +76,11 @@ docker compose down       # PostgreSQL停止
 
 ### Next.js Application Rules
 - ESLint、Prettierのルールを守って実装
+- **コード変更後は必ず以下の順序でチェックを実行すること**
+  1. `yarn prettier` - フォーマット自動整形
+  2. `yarn lint` - ESLintチェック
+  3. `yarn check-types` - TypeScript型チェック
+  - または `yarn code-check` で全チェックを一括実行
 - `components/ui`配下の既存コードは編集しない（追加は許可）
 - **page.tsxから呼び出すコンポーネントは`_components`ディレクトリに配置**
   ```

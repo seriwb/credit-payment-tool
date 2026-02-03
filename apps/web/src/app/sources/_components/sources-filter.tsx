@@ -1,77 +1,73 @@
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
-import type { CategoryOption, SourceFilterParams } from '../_lib/actions';
+import { useState } from "react";
+import { X } from "lucide-react";
+import { useDebounce } from "react-use";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { CategoryOption } from "../_lib/actions";
 
 type Props = {
   categories: CategoryOption[];
-  filter: SourceFilterParams;
-  onFilterChange: (filter: SourceFilterParams) => void;
+  initialName?: string;
+  categoryId?: string | null;
+  onNameChange: (name: string) => void;
+  onCategoryChange: (categoryId: string | null | undefined) => void;
+  onClear: () => void;
   disabled?: boolean;
 };
 
 export function SourcesFilter({
   categories,
-  filter,
-  onFilterChange,
+  initialName,
+  categoryId,
+  onNameChange,
+  onCategoryChange,
+  onClear,
   disabled,
 }: Props) {
+  const [localName, setLocalName] = useState(initialName || "");
+
+  useDebounce(
+    () => {
+      onNameChange(localName);
+    },
+    1000,
+    [localName]
+  );
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ ...filter, name: e.target.value || undefined });
+    setLocalName(e.target.value);
   };
 
   const handleCategoryChange = (value: string) => {
-    let categoryId: string | null | undefined;
-    if (value === 'all') {
-      categoryId = undefined; // 全て
-    } else if (value === 'none') {
-      categoryId = null; // 未分類
+    let newCategoryId: string | null | undefined;
+    if (value === "all") {
+      newCategoryId = undefined; // 全て
+    } else if (value === "none") {
+      newCategoryId = null; // 未分類
     } else {
-      categoryId = value; // 特定のカテゴリ
+      newCategoryId = value; // 特定のカテゴリ
     }
-    onFilterChange({ ...filter, categoryId });
+    onCategoryChange(newCategoryId);
   };
 
   const handleClear = () => {
-    onFilterChange({});
+    setLocalName("");
+    onClear();
   };
 
-  // フィルターが設定されているかどうか
-  const hasFilter = filter.name || filter.categoryId !== undefined;
-
-  // カテゴリSelectの値を決定
-  const categoryValue =
-    filter.categoryId === undefined
-      ? 'all'
-      : filter.categoryId === null
-        ? 'none'
-        : filter.categoryId;
+  const hasFilter = localName || categoryId !== undefined;
+  const categoryValue = categoryId === undefined ? "all" : categoryId === null ? "none" : categoryId;
 
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <div className="flex-1 min-w-[200px] max-w-[300px]">
-        <Input
-          placeholder="支払い元名で検索..."
-          value={filter.name || ''}
-          onChange={handleNameChange}
-          disabled={disabled}
-        />
+      <div className="max-w-[300px] min-w-[200px] flex-1">
+        <Input placeholder="支払い元名で検索..." value={localName} onChange={handleNameChange} disabled={disabled} />
       </div>
       <div className="w-[180px]">
-        <Select
-          value={categoryValue}
-          onValueChange={handleCategoryChange}
-          disabled={disabled}
-        >
+        <Select value={categoryValue} onValueChange={handleCategoryChange} disabled={disabled}>
           <SelectTrigger>
             <SelectValue placeholder="カテゴリ" />
           </SelectTrigger>
@@ -87,14 +83,8 @@ export function SourcesFilter({
         </Select>
       </div>
       {hasFilter && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleClear}
-          disabled={disabled}
-          className="text-muted-foreground"
-        >
-          <X className="h-4 w-4 mr-1" />
+        <Button variant="ghost" size="sm" onClick={handleClear} disabled={disabled} className="text-muted-foreground">
+          <X className="mr-1 h-4 w-4" />
           クリア
         </Button>
       )}
