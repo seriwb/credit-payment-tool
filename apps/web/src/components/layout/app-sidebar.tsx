@@ -1,15 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import {
-  BarChart3,
-  CreditCard,
-  FolderOpen,
-  Home,
-  Tags,
-  Upload,
-} from 'lucide-react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BarChart3, CreditCard, FolderOpen, Home, Tags, Upload } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,37 +13,37 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
+} from "@/components/ui/sidebar";
 
 const menuItems = [
   {
-    label: 'ダッシュボード',
-    href: '/',
+    label: "ダッシュボード",
+    href: "/",
     icon: Home,
   },
   {
-    label: 'CSVインポート',
-    href: '/import',
+    label: "CSVインポート",
+    href: "/import",
     icon: Upload,
   },
   {
-    label: '支払い一覧',
-    href: '/payments',
+    label: "支払い一覧",
+    href: "/payments",
     icon: CreditCard,
   },
   {
-    label: '支払い元管理',
-    href: '/sources',
+    label: "支払い元管理",
+    href: "/sources",
     icon: FolderOpen,
   },
   {
-    label: 'カテゴリ管理',
-    href: '/categories',
+    label: "カテゴリ管理",
+    href: "/categories",
     icon: Tags,
   },
   {
-    label: '分析',
-    href: '/analytics',
+    label: "分析",
+    href: "/analytics",
     icon: BarChart3,
   },
 ];

@@ -1,13 +1,13 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import globals from "globals";
 import { dirname } from "path";
 // import tailwind from "eslint-plugin-tailwindcss";
 import tsEslint from "typescript-eslint";
 import { fileURLToPath } from "url";
-import nextVitals from 'eslint-config-next/core-web-vitals'
-import nextTs from 'eslint-config-next/typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

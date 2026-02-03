@@ -1,20 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useTransition } from 'react';
-import { toast } from 'sonner';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileUploadZone } from './file-upload-zone';
-import { DirectoryInput } from './directory-input';
-import { ImportHistoryTable } from './import-history-table';
-import {
-  importCsvFile,
-  importFromDirectory,
-  deleteImportedFile,
-  getImportHistory,
-} from '../_lib/actions';
-import type { ImportHistory, ImportResult } from '../_lib/types';
+import { useCallback, useState, useTransition } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { deleteImportedFile, getImportHistory, importCsvFile, importFromDirectory } from "../_lib/actions";
+import type { ImportHistory, ImportResult } from "../_lib/types";
+import { DirectoryInput } from "./directory-input";
+import { FileUploadZone } from "./file-upload-zone";
+import { ImportHistoryTable } from "./import-history-table";
 
 type Props = {
   initialHistory: ImportHistory[];
@@ -34,7 +29,7 @@ export function ImportView({ initialHistory }: Props) {
     (files: File[]) => {
       startTransition(async () => {
         const formData = new FormData();
-        files.forEach((file) => formData.append('files', file));
+        files.forEach((file) => formData.append("files", file));
 
         const importResults = await importCsvFile(formData);
         setResults(importResults);
@@ -96,16 +91,10 @@ export function ImportView({ initialHistory }: Props) {
           <TabsTrigger value="directory">ディレクトリ指定</TabsTrigger>
         </TabsList>
         <TabsContent value="upload" className="mt-4">
-          <FileUploadZone
-            onFilesSelected={handleFileUpload}
-            isUploading={isPending}
-          />
+          <FileUploadZone onFilesSelected={handleFileUpload} isUploading={isPending} />
         </TabsContent>
         <TabsContent value="directory" className="mt-4">
-          <DirectoryInput
-            onSubmit={handleDirectoryImport}
-            isLoading={isPending}
-          />
+          <DirectoryInput onSubmit={handleDirectoryImport} isLoading={isPending} />
         </TabsContent>
       </Tabs>
 
@@ -117,20 +106,15 @@ export function ImportView({ initialHistory }: Props) {
           <CardContent>
             <div className="space-y-2">
               {results.map((result, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-2 px-3 rounded bg-muted"
-                >
+                <div key={index} className="flex items-center justify-between rounded bg-muted px-3 py-2">
                   <div className="flex items-center gap-3">
-                    <Badge variant={result.success ? 'default' : 'destructive'}>
-                      {result.success ? '成功' : 'エラー'}
+                    <Badge variant={result.success ? "default" : "destructive"}>
+                      {result.success ? "成功" : "エラー"}
                     </Badge>
-                    <span className="text-sm font-mono">{result.fileName}</span>
+                    <span className="font-mono text-sm">{result.fileName}</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {result.success && result.paymentCount !== undefined
-                      ? `${result.paymentCount}件`
-                      : result.message}
+                    {result.success && result.paymentCount !== undefined ? `${result.paymentCount}件` : result.message}
                   </div>
                 </div>
               ))}

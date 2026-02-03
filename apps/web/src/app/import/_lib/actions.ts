@@ -1,17 +1,17 @@
-'use server';
+"use server";
 
-import { readdirSync, readFileSync, statSync } from 'fs';
-import { join } from 'path';
-import prisma from '@/lib/prisma';
-import { parseCSV, extractYearMonth } from './csv-parser';
-import type { ImportResult, ImportHistory } from './types';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join } from "path";
+import prisma from "@/lib/prisma";
+import { parseCSV } from "./csv-parser";
+import type { ImportHistory, ImportResult } from "./types";
 
 /**
  * インポート履歴を取得
  */
 export async function getImportHistory(): Promise<ImportHistory[]> {
   const files = await prisma.importedFile.findMany({
-    orderBy: { importedAt: 'desc' },
+    orderBy: { importedAt: "desc" },
     include: {
       _count: {
         select: { payments: true },
@@ -32,7 +32,7 @@ export async function getImportHistory(): Promise<ImportHistory[]> {
  * CSVファイルをインポート
  */
 export async function importCsvFile(formData: FormData): Promise<ImportResult[]> {
-  const files = formData.getAll('files') as File[];
+  const files = formData.getAll("files") as File[];
   const results: ImportResult[] = [];
 
   for (const file of files) {
@@ -42,7 +42,7 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
         results.push({
           success: false,
           fileName: file.name,
-          message: 'ファイル名は YYYYMM.csv または YYYYMM-num.csv 形式である必要があります',
+          message: "ファイル名は YYYYMM.csv または YYYYMM-num.csv 形式である必要があります",
         });
         continue;
       }
@@ -56,14 +56,14 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
         results.push({
           success: false,
           fileName: file.name,
-          message: 'このファイルは既にインポート済みです',
+          message: "このファイルは既にインポート済みです",
         });
         continue;
       }
 
       // CSVパース
       const buffer = await file.arrayBuffer();
-      const parseResult = await parseCSV(buffer, file.name);
+      const parseResult = parseCSV(buffer, file.name);
 
       // トランザクションで保存
       const importedFile = await prisma.$transaction(async (tx) => {
@@ -103,15 +103,14 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
       results.push({
         success: true,
         fileName: file.name,
-        message: 'インポート完了',
+        message: "インポート完了",
         paymentCount: parseResult.payments.length,
       });
     } catch (error) {
       results.push({
         success: false,
         fileName: file.name,
-        message:
-          error instanceof Error ? error.message : '不明なエラーが発生しました',
+        message: error instanceof Error ? error.message : "不明なエラーが発生しました",
       });
     }
   }
@@ -133,22 +132,20 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
         {
           success: false,
           fileName: path,
-          message: '指定されたパスはディレクトリではありません',
+          message: "指定されたパスはディレクトリではありません",
         },
       ];
     }
 
     // CSVファイルを検索
-    const fileNames = readdirSync(path).filter(
-      (name) => /^\d{6}(-\d+)?\.csv$/.test(name)
-    );
+    const fileNames = readdirSync(path).filter((name) => /^\d{6}(-\d+)?\.csv$/.test(name));
 
     if (fileNames.length === 0) {
       return [
         {
           success: false,
           fileName: path,
-          message: 'インポート対象のCSVファイルが見つかりません',
+          message: "インポート対象のCSVファイルが見つかりません",
         },
       ];
     }
@@ -165,7 +162,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
           results.push({
             success: false,
             fileName,
-            message: 'このファイルは既にインポート済みです',
+            message: "このファイルは既にインポート済みです",
           });
           continue;
         }
@@ -179,7 +176,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
         );
 
         // CSVパース
-        const parseResult = await parseCSV(arrayBuffer, fileName);
+        const parseResult = parseCSV(arrayBuffer, fileName);
 
         // トランザクションで保存
         await prisma.$transaction(async (tx) => {
@@ -217,15 +214,14 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
         results.push({
           success: true,
           fileName,
-          message: 'インポート完了',
+          message: "インポート完了",
           paymentCount: parseResult.payments.length,
         });
       } catch (error) {
         results.push({
           success: false,
           fileName,
-          message:
-            error instanceof Error ? error.message : '不明なエラーが発生しました',
+          message: error instanceof Error ? error.message : "不明なエラーが発生しました",
         });
       }
     }
@@ -234,10 +230,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
       {
         success: false,
         fileName: path,
-        message:
-          error instanceof Error
-            ? error.message
-            : 'ディレクトリの読み込みに失敗しました',
+        message: error instanceof Error ? error.message : "ディレクトリの読み込みに失敗しました",
       },
     ];
   }
@@ -254,11 +247,11 @@ export async function deleteImportedFile(fileId: string): Promise<{ success: boo
       where: { id: fileId },
     });
 
-    return { success: true, message: '削除しました' };
+    return { success: true, message: "削除しました" };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '削除に失敗しました',
+      message: error instanceof Error ? error.message : "削除に失敗しました",
     };
   }
 }

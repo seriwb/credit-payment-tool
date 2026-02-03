@@ -1,14 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import type { PaymentItem, SourceSummary } from '../_lib/actions';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { PaymentItem, SourceSummary } from "../_lib/actions";
 
 type Props = {
   payments: PaymentItem[];
@@ -30,8 +22,8 @@ function formatYearMonth(yearMonth: string): string {
 function formatDate(date: Date): string {
   const d = new Date(date);
   const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${year}/${month}/${day}`;
 }
 
@@ -50,9 +42,7 @@ export function SourcePaymentsTable({ payments, summary }: Props) {
           <CardTitle className="text-base">支払い履歴</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="py-8 text-center text-muted-foreground">
-            支払いデータがありません
-          </div>
+          <div className="py-8 text-center text-muted-foreground">支払いデータがありません</div>
         </CardContent>
       </Card>
     );
@@ -77,9 +67,7 @@ export function SourcePaymentsTable({ payments, summary }: Props) {
             {payments.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>{formatDate(payment.paymentDate)}</TableCell>
-                <TableCell className="text-right font-mono">
-                  {formatAmount(payment.amount)}
-                </TableCell>
+                <TableCell className="text-right font-mono">{formatAmount(payment.amount)}</TableCell>
                 <TableCell className="text-right">{payment.quantity}</TableCell>
                 <TableCell>{formatYearMonth(payment.yearMonth)}</TableCell>
               </TableRow>
@@ -87,9 +75,7 @@ export function SourcePaymentsTable({ payments, summary }: Props) {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={2}>
-                {summary.paymentCount.toLocaleString()}件の支払い
-              </TableCell>
+              <TableCell colSpan={2}>{summary.paymentCount.toLocaleString()}件の支払い</TableCell>
               <TableCell colSpan={2} className="text-right font-mono">
                 合計: {formatAmount(summary.totalAmount)}
               </TableCell>

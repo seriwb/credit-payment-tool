@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 // ダッシュボード用データ型
 export type DashboardData = {
@@ -37,9 +37,9 @@ export type DashboardData = {
 export async function getDashboardData(): Promise<DashboardData> {
   // 現在の年月を取得
   const now = new Date();
-  const currentYearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentYearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
   const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const previousYearMonth = `${prevMonth.getFullYear()}${String(prevMonth.getMonth() + 1).padStart(2, '0')}`;
+  const previousYearMonth = `${prevMonth.getFullYear()}${String(prevMonth.getMonth() + 1).padStart(2, "0")}`;
 
   // 今月のデータ
   const currentMonthData = await prisma.payment.aggregate({
@@ -58,7 +58,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   // 最近のインポート
   const recentImports = await prisma.importedFile.findMany({
     take: 5,
-    orderBy: { importedAt: 'desc' },
+    orderBy: { importedAt: "desc" },
     include: {
       _count: {
         select: { payments: true },
@@ -68,10 +68,10 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   // 今月の支払い元TOP5
   const topSourcesData = await prisma.payment.groupBy({
-    by: ['paymentSourceId'],
+    by: ["paymentSourceId"],
     where: { yearMonth: currentYearMonth },
     _sum: { amount: true },
-    orderBy: { _sum: { amount: 'desc' } },
+    orderBy: { _sum: { amount: "desc" } },
     take: 5,
   });
 
@@ -95,11 +95,8 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   const categoryMap = new Map<string, number>();
   for (const payment of payments) {
-    const categoryName = payment.paymentSource.category?.name ?? '未分類';
-    categoryMap.set(
-      categoryName,
-      (categoryMap.get(categoryName) ?? 0) + payment.amount
-    );
+    const categoryName = payment.paymentSource.category?.name ?? "未分類";
+    categoryMap.set(categoryName, (categoryMap.get(categoryName) ?? 0) + payment.amount);
   }
 
   return {
@@ -127,7 +124,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       paymentCount: item._count.payments,
     })),
     topSources: topSourcesData.map((item) => ({
-      sourceName: sourceNameMap.get(item.paymentSourceId) ?? '不明',
+      sourceName: sourceNameMap.get(item.paymentSourceId) ?? "不明",
       totalAmount: item._sum.amount ?? 0,
     })),
     categoryBreakdown: Array.from(categoryMap.entries())

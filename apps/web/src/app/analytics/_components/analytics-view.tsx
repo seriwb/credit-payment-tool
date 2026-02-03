@@ -1,25 +1,19 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useTransition } from 'react';
+import { useCallback, useState, useTransition } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MonthlyChart } from './monthly-chart';
-import { SourceChart } from './source-chart';
-import { CategoryChart } from './category-chart';
-import {
-  getMonthlyAnalytics,
-  getSourceAnalytics,
-  getCategoryAnalytics,
+  type CategoryData,
   type MonthlyData,
   type SourceData,
-  type CategoryData,
-} from '../_lib/actions';
+  getCategoryAnalytics,
+  getMonthlyAnalytics,
+  getSourceAnalytics,
+} from "../_lib/actions";
+import { CategoryChart } from "./category-chart";
+import { MonthlyChart } from "./monthly-chart";
+import { SourceChart } from "./source-chart";
 
 type Props = {
   initialMonthlyData: MonthlyData[];
@@ -28,46 +22,38 @@ type Props = {
   yearMonths: string[];
 };
 
-export function AnalyticsView({
-  initialMonthlyData,
-  initialSourceData,
-  initialCategoryData,
-  yearMonths,
-}: Props) {
+export function AnalyticsView({ initialMonthlyData, initialSourceData, initialCategoryData, yearMonths }: Props) {
   const [monthlyData, setMonthlyData] = useState(initialMonthlyData);
   const [sourceData, setSourceData] = useState(initialSourceData);
   const [categoryData, setCategoryData] = useState(initialCategoryData);
-  const [startMonth, setStartMonth] = useState<string>('');
-  const [endMonth, setEndMonth] = useState<string>('');
+  const [startMonth, setStartMonth] = useState<string>("");
+  const [endMonth, setEndMonth] = useState<string>("");
   const [isPending, startTransition] = useTransition();
 
   const formatYearMonth = (yearMonth: string) => {
     return `${yearMonth.slice(0, 4)}年${yearMonth.slice(4, 6)}月`;
   };
 
-  const handlePeriodChange = useCallback(
-    (start: string, end: string) => {
-      startTransition(async () => {
-        const startYM = start || undefined;
-        const endYM = end || undefined;
+  const handlePeriodChange = useCallback((start: string, end: string) => {
+    startTransition(async () => {
+      const startYM = start || undefined;
+      const endYM = end || undefined;
 
-        const [monthly, source, category] = await Promise.all([
-          getMonthlyAnalytics(startYM, endYM),
-          getSourceAnalytics(startYM, endYM),
-          getCategoryAnalytics(startYM, endYM),
-        ]);
+      const [monthly, source, category] = await Promise.all([
+        getMonthlyAnalytics(startYM, endYM),
+        getSourceAnalytics(startYM, endYM),
+        getCategoryAnalytics(startYM, endYM),
+      ]);
 
-        setMonthlyData(monthly);
-        setSourceData(source);
-        setCategoryData(category);
-      });
-    },
-    []
-  );
+      setMonthlyData(monthly);
+      setSourceData(source);
+      setCategoryData(category);
+    });
+  }, []);
 
   const handleStartChange = useCallback(
     (value: string) => {
-      const newStart = value === 'all' ? '' : value;
+      const newStart = value === "all" ? "" : value;
       setStartMonth(newStart);
       handlePeriodChange(newStart, endMonth);
     },
@@ -76,7 +62,7 @@ export function AnalyticsView({
 
   const handleEndChange = useCallback(
     (value: string) => {
-      const newEnd = value === 'all' ? '' : value;
+      const newEnd = value === "all" ? "" : value;
       setEndMonth(newEnd);
       handlePeriodChange(startMonth, newEnd);
     },
@@ -99,7 +85,7 @@ export function AnalyticsView({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm">開始:</span>
-              <Select value={startMonth || 'all'} onValueChange={handleStartChange}>
+              <Select value={startMonth || "all"} onValueChange={handleStartChange}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
@@ -116,7 +102,7 @@ export function AnalyticsView({
             <span className="text-muted-foreground">〜</span>
             <div className="flex items-center gap-2">
               <span className="text-sm">終了:</span>
-              <Select value={endMonth || 'all'} onValueChange={handleEndChange}>
+              <Select value={endMonth || "all"} onValueChange={handleEndChange}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
@@ -130,22 +116,16 @@ export function AnalyticsView({
                 </SelectContent>
               </Select>
             </div>
-            {isPending && (
-              <span className="text-sm text-muted-foreground ml-4">
-                読み込み中...
-              </span>
-            )}
+            {isPending && <span className="ml-4 text-sm text-muted-foreground">読み込み中...</span>}
           </div>
         </CardContent>
       </Card>
 
       {/* サマリー */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              合計金額
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">合計金額</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">¥{totalAmount.toLocaleString()}</p>
@@ -153,9 +133,7 @@ export function AnalyticsView({
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              支払い件数
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">支払い件数</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{totalCount.toLocaleString()}件</p>
@@ -163,14 +141,10 @@ export function AnalyticsView({
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              月平均
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">月平均</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">
-              ¥{Math.round(avgAmount).toLocaleString()}
-            </p>
+            <p className="text-2xl font-bold">¥{Math.round(avgAmount).toLocaleString()}</p>
           </CardContent>
         </Card>
       </div>
@@ -178,7 +152,7 @@ export function AnalyticsView({
       {/* グラフ */}
       <MonthlyChart data={monthlyData} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <SourceChart data={sourceData} startMonth={startMonth} endMonth={endMonth} />
         <CategoryChart data={categoryData} />
       </div>

@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 // カテゴリ詳細の型
 export type CategoryDetail = {
@@ -20,7 +20,7 @@ export async function getCategories(): Promise<CategoryDetail[]> {
         select: { paymentSources: true },
       },
     },
-    orderBy: { displayOrder: 'asc' },
+    orderBy: { displayOrder: "asc" },
   });
 
   return categories.map((category) => ({
@@ -45,18 +45,18 @@ export async function createCategory(
     });
 
     if (existing) {
-      return { success: false, message: '同じ名前のカテゴリが既に存在します' };
+      return { success: false, message: "同じ名前のカテゴリが既に存在します" };
     }
 
     await prisma.category.create({
       data: { name, displayOrder },
     });
 
-    return { success: true, message: 'カテゴリを作成しました' };
+    return { success: true, message: "カテゴリを作成しました" };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '作成に失敗しました',
+      message: error instanceof Error ? error.message : "作成に失敗しました",
     };
   }
 }
@@ -79,7 +79,7 @@ export async function updateCategory(
     });
 
     if (existing) {
-      return { success: false, message: '同じ名前のカテゴリが既に存在します' };
+      return { success: false, message: "同じ名前のカテゴリが既に存在します" };
     }
 
     await prisma.category.update({
@@ -87,11 +87,11 @@ export async function updateCategory(
       data: { name, displayOrder },
     });
 
-    return { success: true, message: 'カテゴリを更新しました' };
+    return { success: true, message: "カテゴリを更新しました" };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '更新に失敗しました',
+      message: error instanceof Error ? error.message : "更新に失敗しました",
     };
   }
 }
@@ -99,9 +99,7 @@ export async function updateCategory(
 /**
  * カテゴリを削除
  */
-export async function deleteCategory(
-  id: string
-): Promise<{ success: boolean; message: string }> {
+export async function deleteCategory(id: string): Promise<{ success: boolean; message: string }> {
   try {
     // 使用中チェック
     const category = await prisma.category.findUnique({
@@ -114,13 +112,13 @@ export async function deleteCategory(
     });
 
     if (!category) {
-      return { success: false, message: 'カテゴリが見つかりません' };
+      return { success: false, message: "カテゴリが見つかりません" };
     }
 
     if (category._count.paymentSources > 0) {
       return {
         success: false,
-        message: 'このカテゴリは支払い元に割り当てられているため削除できません',
+        message: "このカテゴリは支払い元に割り当てられているため削除できません",
       };
     }
 
@@ -128,11 +126,11 @@ export async function deleteCategory(
       where: { id },
     });
 
-    return { success: true, message: 'カテゴリを削除しました' };
+    return { success: true, message: "カテゴリを削除しました" };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : '削除に失敗しました',
+      message: error instanceof Error ? error.message : "削除に失敗しました",
     };
   }
 }

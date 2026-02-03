@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 // 支払い詳細の型
 export type PaymentDetail = {
@@ -25,8 +25,8 @@ export type PaymentsResult = {
 export async function getAvailableYearMonths(): Promise<string[]> {
   const yearMonths = await prisma.payment.findMany({
     select: { yearMonth: true },
-    distinct: ['yearMonth'],
-    orderBy: { yearMonth: 'desc' },
+    distinct: ["yearMonth"],
+    orderBy: { yearMonth: "desc" },
   });
 
   return yearMonths.map((item) => item.yearMonth);
@@ -47,7 +47,7 @@ export async function getPaymentsByMonth(yearMonth: string): Promise<PaymentsRes
         },
       },
     },
-    orderBy: { paymentDate: 'desc' },
+    orderBy: { paymentDate: "desc" },
   });
 
   const paymentDetails: PaymentDetail[] = payments.map((payment) => ({
@@ -73,11 +73,11 @@ export async function getPaymentsByMonth(yearMonth: string): Promise<PaymentsRes
  */
 export async function getPaymentSummaryBySource(yearMonth: string) {
   const summary = await prisma.payment.groupBy({
-    by: ['paymentSourceId'],
+    by: ["paymentSourceId"],
     where: { yearMonth },
     _sum: { amount: true },
     _count: { id: true },
-    orderBy: { _sum: { amount: 'desc' } },
+    orderBy: { _sum: { amount: "desc" } },
   });
 
   // 支払い元情報を取得
@@ -93,7 +93,7 @@ export async function getPaymentSummaryBySource(yearMonth: string) {
     const source = sourceMap.get(item.paymentSourceId);
     return {
       sourceId: item.paymentSourceId,
-      sourceName: source?.name ?? '不明',
+      sourceName: source?.name ?? "不明",
       categoryName: source?.category?.name ?? null,
       totalAmount: item._sum.amount ?? 0,
       count: item._count.id,

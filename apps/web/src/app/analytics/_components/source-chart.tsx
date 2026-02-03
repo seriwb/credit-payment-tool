@@ -1,22 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import {
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from '@/components/ui/chart';
-import type { SourceData } from '../_lib/actions';
+import Link from "next/link";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import type { SourceData } from "../_lib/actions";
 
 type Props = {
   data: SourceData[];
@@ -26,8 +14,8 @@ type Props = {
 
 const chartConfig = {
   totalAmount: {
-    label: '金額',
-    color: 'var(--chart-2)',
+    label: "金額",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
@@ -35,10 +23,10 @@ export function SourceChart({ data, startMonth, endMonth }: Props) {
   // 詳細ページへのリンクを生成
   const detailUrl = (() => {
     const params = new URLSearchParams();
-    if (startMonth) params.set('start', startMonth);
-    if (endMonth) params.set('end', endMonth);
+    if (startMonth) params.set("start", startMonth);
+    if (endMonth) params.set("end", endMonth);
     const query = params.toString();
-    return `/analytics/sources${query ? `?${query}` : ''}`;
+    return `/analytics/sources${query ? `?${query}` : ""}`;
   })();
   const formatAmount = (amount: number) => {
     if (amount >= 10000) {
@@ -52,17 +40,12 @@ export function SourceChart({ data, startMonth, endMonth }: Props) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">支払い元別 TOP10</CardTitle>
-          <Link
-            href={detailUrl}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href={detailUrl} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             すべて表示 →
           </Link>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            データがありません
-          </div>
+          <div className="flex h-[300px] items-center justify-center text-muted-foreground">データがありません</div>
         </CardContent>
       </Card>
     );
@@ -72,41 +55,23 @@ export function SourceChart({ data, startMonth, endMonth }: Props) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base">支払い元別 TOP10</CardTitle>
-        <Link
-          href={detailUrl}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link href={detailUrl} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
           すべて表示 →
         </Link>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer>
-            <BarChart
-              data={data}
-              layout="vertical"
-              margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
-            >
+            <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 80, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" tickFormatter={formatAmount} tick={{ fontSize: 12 }} />
-              <YAxis
-                type="category"
-                dataKey="sourceName"
-                tick={{ fontSize: 11 }}
-                width={75}
-              />
+              <YAxis type="category" dataKey="sourceName" tick={{ fontSize: 11 }} width={75} />
               <ChartTooltip
                 content={
-                  <ChartTooltipContent
-                    formatter={(value) => [`¥${Number(value).toLocaleString()}`, '支払い金額']}
-                  />
+                  <ChartTooltipContent formatter={(value) => [`¥${Number(value).toLocaleString()}`, "支払い金額"]} />
                 }
               />
-              <Bar
-                dataKey="totalAmount"
-                fill="var(--color-totalAmount)"
-                radius={[0, 4, 4, 0]}
-              />
+              <Bar dataKey="totalAmount" fill="var(--color-totalAmount)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>

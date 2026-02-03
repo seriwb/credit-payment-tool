@@ -1,44 +1,36 @@
-'use client';
+"use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from '@/components/ui/chart';
-import type { CategoryData } from '../_lib/actions';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import type { CategoryData } from "../_lib/actions";
 
 type Props = {
   data: CategoryData[];
 };
 
 const COLORS = [
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
-  '#8884d8',
-  '#82ca9d',
-  '#ffc658',
-  '#ff7300',
-  '#00C49F',
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff7300",
+  "#00C49F",
 ];
 
 export function CategoryChart({ data }: Props) {
   // カテゴリごとにチャート設定を生成
-  const chartConfig = data.reduce(
-    (acc, item, index) => {
-      acc[item.categoryName] = {
-        label: item.categoryName,
-        color: COLORS[index % COLORS.length],
-      };
-      return acc;
-    },
-    {} as ChartConfig
-  );
+  const chartConfig = data.reduce((acc, item, index) => {
+    acc[item.categoryName] = {
+      label: item.categoryName,
+      color: COLORS[index % COLORS.length],
+    };
+    return acc;
+  }, {} as ChartConfig);
 
   if (data.length === 0) {
     return (
@@ -47,9 +39,7 @@ export function CategoryChart({ data }: Props) {
           <CardTitle className="text-base">カテゴリ別内訳</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            データがありません
-          </div>
+          <div className="flex h-[300px] items-center justify-center text-muted-foreground">データがありません</div>
         </CardContent>
       </Card>
     );
@@ -77,10 +67,7 @@ export function CategoryChart({ data }: Props) {
                 labelLine={true}
               >
                 {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <ChartTooltip
@@ -88,10 +75,7 @@ export function CategoryChart({ data }: Props) {
                   <ChartTooltipContent
                     formatter={(value, name) => {
                       const percent = ((Number(value) / totalAmount) * 100).toFixed(1);
-                      return [
-                        `¥${Number(value).toLocaleString()} (${percent}%)`,
-                        name,
-                      ];
+                      return [`¥${Number(value).toLocaleString()} (${percent}%)`, name];
                     }}
                   />
                 }

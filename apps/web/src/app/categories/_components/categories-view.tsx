@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useTransition } from 'react';
-import { Plus } from 'lucide-react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { useCallback, useState, useTransition } from "react";
+import { Plus } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,17 +11,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { CategoriesTable } from './categories-table';
-import { CategoryForm } from './category-form';
-import {
-  getCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  type CategoryDetail,
-} from '../_lib/actions';
-import type { CategoryFormInput } from '../_lib/schemas';
+} from "@/components/ui/dialog";
+import { type CategoryDetail, createCategory, deleteCategory, getCategories, updateCategory } from "../_lib/actions";
+import type { CategoryFormInput } from "../_lib/schemas";
+import { CategoriesTable } from "./categories-table";
+import { CategoryForm } from "./category-form";
 
 type Props = {
   initialCategories: CategoryDetail[];
@@ -95,16 +89,12 @@ export function CategoriesView({ initialCategories }: Props) {
     <div className="space-y-6">
       <div className="flex justify-end">
         <Button onClick={handleAdd}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           カテゴリ追加
         </Button>
       </div>
 
-      <CategoriesTable
-        categories={categories}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <CategoriesTable categories={categories} onEdit={handleEdit} onDelete={handleDelete} />
 
       <CategoryForm
         open={isFormOpen}
@@ -118,24 +108,14 @@ export function CategoriesView({ initialCategories }: Props) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>カテゴリの削除</DialogTitle>
-            <DialogDescription>
-              カテゴリ「{deleteTarget?.name}」を削除しますか？
-            </DialogDescription>
+            <DialogDescription>カテゴリ「{deleteTarget?.name}」を削除しますか？</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteTarget(null)}
-              disabled={isPending}
-            >
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isPending}>
               キャンセル
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-              disabled={isPending}
-            >
-              {isPending ? '削除中...' : '削除'}
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={isPending}>
+              {isPending ? "削除中..." : "削除"}
             </Button>
           </DialogFooter>
         </DialogContent>

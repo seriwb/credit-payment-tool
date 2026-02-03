@@ -1,4 +1,4 @@
-import type { CsvParseResult, ParsedPayment } from './types';
+import type { CsvParseResult, ParsedPayment } from "./types";
 
 /**
  * 文字コードを判定し、文字列に変換
@@ -8,7 +8,7 @@ function decodeBuffer(buffer: ArrayBuffer): string {
 
   // UTF-8 BOMチェック
   if (uint8Array[0] === 0xef && uint8Array[1] === 0xbb && uint8Array[2] === 0xbf) {
-    return new TextDecoder('utf-8').decode(uint8Array.slice(3));
+    return new TextDecoder("utf-8").decode(uint8Array.slice(3));
   }
 
   // Shift_JIS判定（簡易版）
@@ -23,18 +23,18 @@ function decodeBuffer(buffer: ArrayBuffer): string {
   }
 
   if (isShiftJis) {
-    return new TextDecoder('shift_jis').decode(uint8Array);
+    return new TextDecoder("shift_jis").decode(uint8Array);
   }
 
   // デフォルトはUTF-8
-  return new TextDecoder('utf-8').decode(uint8Array);
+  return new TextDecoder("utf-8").decode(uint8Array);
 }
 
 /**
  * 日付文字列をパース（YYYY/MM/DD形式）
  */
 function parseDate(dateStr: string): Date {
-  const parts = dateStr.trim().split('/');
+  const parts = dateStr.trim().split("/");
   if (parts.length !== 3) {
     throw new Error(`不正な日付形式: ${dateStr}`);
   }
@@ -51,7 +51,7 @@ function parseDate(dateStr: string): Date {
  */
 function parseAmount(amountStr: string): number {
   // カンマ、円記号、スペースを除去
-  const cleaned = amountStr.replace(/[,¥\s]/g, '').trim();
+  const cleaned = amountStr.replace(/[,¥\s]/g, "").trim();
   const amount = parseInt(cleaned, 10);
 
   if (isNaN(amount)) {
@@ -65,7 +65,7 @@ function parseAmount(amountStr: string): number {
  * ファイル名から年月を抽出
  */
 export function extractYearMonth(fileName: string): string {
-  const match = fileName.match(/^(\d{6})(-\d+)?\.csv$/);
+  const match = /^(\d{6})(-\d+)?\.csv$/.exec(fileName);
   if (!match) {
     throw new Error(`不正なファイル名形式: ${fileName}`);
   }
@@ -79,15 +79,12 @@ export function extractYearMonth(fileName: string): string {
  * 2行目～: 日付, 支払い元, 金額, 個数, 個数, 金額
  * 最終行: (空), (空), (空), (空), (空), 合計金額
  */
-export async function parseCSV(
-  buffer: ArrayBuffer,
-  fileName: string
-): Promise<CsvParseResult> {
+export function parseCSV(buffer: ArrayBuffer, fileName: string): CsvParseResult {
   const content = decodeBuffer(buffer);
-  const lines = content.split(/\r?\n/).filter((line) => line.trim() !== '');
+  const lines = content.split(/\r?\n/).filter((line) => line.trim() !== "");
 
   if (lines.length < 2) {
-    throw new Error('CSVファイルにデータ行がありません');
+    throw new Error("CSVファイルにデータ行がありません");
   }
 
   const yearMonth = extractYearMonth(fileName);
@@ -99,7 +96,7 @@ export async function parseCSV(
   // 2行目から最終行の手前までがデータ行
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
-    const columns = line.split(',');
+    const columns = line.split(",");
 
     if (columns.length < 6) {
       continue;

@@ -1,19 +1,12 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { ArrowDown, ArrowRight, ArrowUp, Upload } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import type { DashboardData } from '../_lib/actions';
+import Link from "next/link";
+import { ArrowDown, ArrowRight, ArrowUp, Upload } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { DashboardData } from "../_lib/actions";
 
 type Props = {
   data: DashboardData;
@@ -29,46 +22,36 @@ export function DashboardView({ data }: Props) {
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('ja-JP', {
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(date).toLocaleDateString("ja-JP", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   // 前月比計算
   const monthDiff =
-    data.currentMonth && data.previousMonth
-      ? data.currentMonth.totalAmount - data.previousMonth.totalAmount
-      : null;
+    data.currentMonth && data.previousMonth ? data.currentMonth.totalAmount - data.previousMonth.totalAmount : null;
 
   const monthDiffPercent =
     data.currentMonth && data.previousMonth && data.previousMonth.totalAmount > 0
-      ? ((data.currentMonth.totalAmount - data.previousMonth.totalAmount) /
-          data.previousMonth.totalAmount) *
-        100
+      ? ((data.currentMonth.totalAmount - data.previousMonth.totalAmount) / data.previousMonth.totalAmount) * 100
       : null;
 
   return (
     <div className="space-y-6">
       {/* 今月の概要 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              今月の支払い
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">今月の支払い</CardTitle>
           </CardHeader>
           <CardContent>
             {data.currentMonth ? (
               <>
-                <p className="text-2xl font-bold">
-                  {formatAmount(data.currentMonth.totalAmount)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {data.currentMonth.paymentCount}件の支払い
-                </p>
+                <p className="text-2xl font-bold">{formatAmount(data.currentMonth.totalAmount)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{data.currentMonth.paymentCount}件の支払い</p>
               </>
             ) : (
               <p className="text-muted-foreground">データなし</p>
@@ -78,19 +61,13 @@ export function DashboardView({ data }: Props) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              先月の支払い
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">先月の支払い</CardTitle>
           </CardHeader>
           <CardContent>
             {data.previousMonth ? (
               <>
-                <p className="text-2xl font-bold">
-                  {formatAmount(data.previousMonth.totalAmount)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {data.previousMonth.paymentCount}件の支払い
-                </p>
+                <p className="text-2xl font-bold">{formatAmount(data.previousMonth.totalAmount)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{data.previousMonth.paymentCount}件の支払い</p>
               </>
             ) : (
               <p className="text-muted-foreground">データなし</p>
@@ -100,9 +77,7 @@ export function DashboardView({ data }: Props) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              前月比
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">前月比</CardTitle>
           </CardHeader>
           <CardContent>
             {monthDiff !== null ? (
@@ -115,7 +90,7 @@ export function DashboardView({ data }: Props) {
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
                 )}
                 <p className="text-2xl font-bold">
-                  {monthDiff > 0 ? '+' : ''}
+                  {monthDiff > 0 ? "+" : ""}
                   {formatAmount(monthDiff)}
                 </p>
               </div>
@@ -123,8 +98,8 @@ export function DashboardView({ data }: Props) {
               <p className="text-muted-foreground">比較データなし</p>
             )}
             {monthDiffPercent !== null && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {monthDiffPercent > 0 ? '+' : ''}
+              <p className="mt-1 text-xs text-muted-foreground">
+                {monthDiffPercent > 0 ? "+" : ""}
                 {monthDiffPercent.toFixed(1)}%
               </p>
             )}
@@ -133,15 +108,13 @@ export function DashboardView({ data }: Props) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              インポート
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">インポート</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{data.recentImports.length}件</p>
             <Link href="/import">
-              <Button variant="link" className="p-0 h-auto mt-1">
-                <Upload className="h-3 w-3 mr-1" />
+              <Button variant="link" className="mt-1 h-auto p-0">
+                <Upload className="mr-1 h-3 w-3" />
                 インポートする
               </Button>
             </Link>
@@ -149,7 +122,7 @@ export function DashboardView({ data }: Props) {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* 今月の支払い元TOP5 */}
         <Card>
           <CardHeader>
@@ -158,32 +131,23 @@ export function DashboardView({ data }: Props) {
               <Link href="/sources">
                 <Button variant="ghost" size="sm">
                   すべて表示
-                  <ArrowRight className="h-4 w-4 ml-1" />
+                  <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             {data.topSources.length === 0 ? (
-              <p className="text-center py-4 text-muted-foreground">
-                データがありません
-              </p>
+              <p className="py-4 text-center text-muted-foreground">データがありません</p>
             ) : (
               <div className="space-y-3">
                 {data.topSources.map((source, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
+                  <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-muted-foreground w-6">
-                        {index + 1}
-                      </span>
+                      <span className="w-6 text-lg font-bold text-muted-foreground">{index + 1}</span>
                       <span className="text-sm">{source.sourceName}</span>
                     </div>
-                    <span className="font-mono text-sm">
-                      {formatAmount(source.totalAmount)}
-                    </span>
+                    <span className="font-mono text-sm">{formatAmount(source.totalAmount)}</span>
                   </div>
                 ))}
               </div>
@@ -199,27 +163,20 @@ export function DashboardView({ data }: Props) {
               <Link href="/analytics">
                 <Button variant="ghost" size="sm">
                   詳細分析
-                  <ArrowRight className="h-4 w-4 ml-1" />
+                  <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             {data.categoryBreakdown.length === 0 ? (
-              <p className="text-center py-4 text-muted-foreground">
-                データがありません
-              </p>
+              <p className="py-4 text-center text-muted-foreground">データがありません</p>
             ) : (
               <div className="space-y-3">
                 {data.categoryBreakdown.slice(0, 5).map((category, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
+                  <div key={index} className="flex items-center justify-between">
                     <Badge variant="outline">{category.categoryName}</Badge>
-                    <span className="font-mono text-sm">
-                      {formatAmount(category.totalAmount)}
-                    </span>
+                    <span className="font-mono text-sm">{formatAmount(category.totalAmount)}</span>
                   </div>
                 ))}
               </div>
@@ -236,7 +193,7 @@ export function DashboardView({ data }: Props) {
             <Link href="/import">
               <Button variant="ghost" size="sm">
                 すべて表示
-                <ArrowRight className="h-4 w-4 ml-1" />
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -244,12 +201,10 @@ export function DashboardView({ data }: Props) {
         <CardContent className="p-0">
           {data.recentImports.length === 0 ? (
             <div className="py-8 text-center">
-              <p className="text-muted-foreground">
-                インポート履歴がありません
-              </p>
+              <p className="text-muted-foreground">インポート履歴がありません</p>
               <Link href="/import">
                 <Button variant="outline" className="mt-4">
-                  <Upload className="h-4 w-4 mr-2" />
+                  <Upload className="mr-2 h-4 w-4" />
                   CSVをインポート
                 </Button>
               </Link>
@@ -267,13 +222,9 @@ export function DashboardView({ data }: Props) {
               <TableBody>
                 {data.recentImports.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell className="font-mono text-sm">
-                      {item.fileName}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm">{item.fileName}</TableCell>
                     <TableCell>{formatYearMonth(item.yearMonth)}</TableCell>
-                    <TableCell className="text-right">
-                      {item.paymentCount}件
-                    </TableCell>
+                    <TableCell className="text-right">{item.paymentCount}件</TableCell>
                     <TableCell>{formatDate(item.importedAt)}</TableCell>
                   </TableRow>
                 ))}

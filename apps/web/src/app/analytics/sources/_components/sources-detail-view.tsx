@@ -1,20 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
-import { SourcesChart } from './sources-chart';
-import { SourcesTable } from './sources-table';
-import { getSourceAnalytics, type SourceData } from '../../_lib/actions';
+import { useCallback, useState, useTransition } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { type SourceData, getSourceAnalytics } from "../../_lib/actions";
+import { SourcesChart } from "./sources-chart";
+import { SourcesTable } from "./sources-table";
 
 type Props = {
   initialData: SourceData[];
@@ -23,16 +17,11 @@ type Props = {
   initialEndMonth?: string;
 };
 
-export function SourcesDetailView({
-  initialData,
-  yearMonths,
-  initialStartMonth,
-  initialEndMonth,
-}: Props) {
+export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, initialEndMonth }: Props) {
   const router = useRouter();
   const [data, setData] = useState(initialData);
-  const [startMonth, setStartMonth] = useState<string>(initialStartMonth ?? '');
-  const [endMonth, setEndMonth] = useState<string>(initialEndMonth ?? '');
+  const [startMonth, setStartMonth] = useState<string>(initialStartMonth ?? "");
+  const [endMonth, setEndMonth] = useState<string>(initialEndMonth ?? "");
   const [isPending, startTransition] = useTransition();
 
   // 年月をフォーマット
@@ -44,10 +33,10 @@ export function SourcesDetailView({
   const updateUrl = useCallback(
     (start: string, end: string) => {
       const params = new URLSearchParams();
-      if (start) params.set('start', start);
-      if (end) params.set('end', end);
+      if (start) params.set("start", start);
+      if (end) params.set("end", end);
       const query = params.toString();
-      router.push(`/analytics/sources${query ? `?${query}` : ''}`);
+      router.push(`/analytics/sources${query ? `?${query}` : ""}`);
     },
     [router]
   );
@@ -70,7 +59,7 @@ export function SourcesDetailView({
 
   const handleStartChange = useCallback(
     (value: string) => {
-      const newStart = value === 'all' ? '' : value;
+      const newStart = value === "all" ? "" : value;
       setStartMonth(newStart);
       handlePeriodChange(newStart, endMonth);
     },
@@ -79,7 +68,7 @@ export function SourcesDetailView({
 
   const handleEndChange = useCallback(
     (value: string) => {
-      const newEnd = value === 'all' ? '' : value;
+      const newEnd = value === "all" ? "" : value;
       setEndMonth(newEnd);
       handlePeriodChange(startMonth, newEnd);
     },
@@ -95,9 +84,9 @@ export function SourcesDetailView({
       {/* 戻るリンク */}
       <Link
         href="/analytics"
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4 mr-1" />
+        <ArrowLeft className="mr-1 h-4 w-4" />
         分析ページに戻る
       </Link>
 
@@ -110,7 +99,7 @@ export function SourcesDetailView({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm">開始:</span>
-              <Select value={startMonth || 'all'} onValueChange={handleStartChange}>
+              <Select value={startMonth || "all"} onValueChange={handleStartChange}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
@@ -127,7 +116,7 @@ export function SourcesDetailView({
             <span className="text-muted-foreground">〜</span>
             <div className="flex items-center gap-2">
               <span className="text-sm">終了:</span>
-              <Select value={endMonth || 'all'} onValueChange={handleEndChange}>
+              <Select value={endMonth || "all"} onValueChange={handleEndChange}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="指定なし" />
                 </SelectTrigger>
@@ -141,22 +130,16 @@ export function SourcesDetailView({
                 </SelectContent>
               </Select>
             </div>
-            {isPending && (
-              <span className="text-sm text-muted-foreground ml-4">
-                読み込み中...
-              </span>
-            )}
+            {isPending && <span className="ml-4 text-sm text-muted-foreground">読み込み中...</span>}
           </div>
         </CardContent>
       </Card>
 
       {/* サマリー */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              支払い元数
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">支払い元数</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{data.length.toLocaleString()}件</p>
@@ -164,9 +147,7 @@ export function SourcesDetailView({
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              合計金額
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">合計金額</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">¥{totalAmount.toLocaleString()}</p>
@@ -174,9 +155,7 @@ export function SourcesDetailView({
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              合計件数
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">合計件数</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{totalCount.toLocaleString()}回</p>

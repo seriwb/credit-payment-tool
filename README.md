@@ -77,16 +77,16 @@ http://localhost:3000 にアクセス
 
 ## 利用可能なスクリプト
 
-| コマンド | 説明 |
-|---------|------|
-| `yarn web:dev` | 開発サーバー起動 |
-| `yarn web:build` | プロダクションビルド |
-| `yarn web:start` | プロダクションサーバー起動 |
-| `yarn db:dev` | マイグレーション実行（開発） |
-| `yarn db:deploy` | マイグレーション実行（本番） |
-| `yarn db:generate` | Prisma Client生成 |
-| `yarn db:seed` | 初期データ投入 |
-| `yarn db:studio` | Prisma Studio起動 |
+| コマンド           | 説明                         |
+| ------------------ | ---------------------------- |
+| `yarn web:dev`     | 開発サーバー起動             |
+| `yarn web:build`   | プロダクションビルド         |
+| `yarn web:start`   | プロダクションサーバー起動   |
+| `yarn db:dev`      | マイグレーション実行（開発） |
+| `yarn db:deploy`   | マイグレーション実行（本番） |
+| `yarn db:generate` | Prisma Client生成            |
+| `yarn db:seed`     | 初期データ投入               |
+| `yarn db:studio`   | Prisma Studio起動            |
 
 ## CSVファイル形式
 
@@ -108,7 +108,6 @@ http://localhost:3000 にアクセス
 
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:35432/goldpoint?schema=public"
-DIRECT_URL="postgresql://postgres:postgres@localhost:35432/goldpoint?schema=public"
 ```
 
 ## ライセンス

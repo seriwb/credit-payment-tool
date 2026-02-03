@@ -1,17 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { useState } from "react";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -19,8 +11,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import type { ImportHistory } from '../_lib/types';
+} from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { ImportHistory } from "../_lib/types";
 
 type Props = {
   history: ImportHistory[];
@@ -41,12 +34,12 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(date).toLocaleString("ja-JP", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -62,9 +55,7 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              インポート履歴がありません
-            </p>
+            <p className="py-8 text-center text-sm text-muted-foreground">インポート履歴がありません</p>
           ) : (
             <Table>
               <TableHeader>
@@ -79,20 +70,12 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
               <TableBody>
                 {history.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell className="font-mono text-sm">
-                      {item.fileName}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm">{item.fileName}</TableCell>
                     <TableCell>{formatYearMonth(item.yearMonth)}</TableCell>
-                    <TableCell className="text-right">
-                      {item.paymentCount.toLocaleString()}件
-                    </TableCell>
+                    <TableCell className="text-right">{item.paymentCount.toLocaleString()}件</TableCell>
                     <TableCell>{formatDate(item.importedAt)}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setDeleteTarget(item)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(item)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>
@@ -109,24 +92,15 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
           <DialogHeader>
             <DialogTitle>インポートデータの削除</DialogTitle>
             <DialogDescription>
-              {deleteTarget?.fileName} のインポートデータを削除しますか？
-              関連する支払いデータもすべて削除されます。
+              {deleteTarget?.fileName} のインポートデータを削除しますか？ 関連する支払いデータもすべて削除されます。
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteTarget(null)}
-              disabled={isDeleting}
-            >
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
               キャンセル
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-              disabled={isDeleting}
-            >
-              {isDeleting ? '削除中...' : '削除'}
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={isDeleting}>
+              {isDeleting ? "削除中..." : "削除"}
             </Button>
           </DialogFooter>
         </DialogContent>

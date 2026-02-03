@@ -1,25 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "src/types",
-      "./node_modules/@types",
-      "../../node_modules/@types"
-    ],
+    "types": ["node"],
+    "typeRoots": ["src/types", "./node_modules/@types", "../../node_modules/@types"],
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -32,12 +22,8 @@
     "experimentalDecorators": true,
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@images/*": [
-        "../public/images/*"
-      ]
+      "@/*": ["./*"],
+      "@images/*": ["../public/images/*"]
     },
     "plugins": [
       {
@@ -53,9 +39,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "next.config.ts"
-  ]
+  "exclude": ["node_modules", ".next", "next.config.ts"]
 }

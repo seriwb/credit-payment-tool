@@ -1,21 +1,9 @@
-'use client';
+"use client";
 
-import {
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from '@/components/ui/chart';
-import type { MonthlyData } from '../_lib/actions';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import type { MonthlyData } from "../_lib/actions";
 
 type Props = {
   data: MonthlyData[];
@@ -23,8 +11,8 @@ type Props = {
 
 const chartConfig = {
   totalAmount: {
-    label: '金額',
-    color: 'var(--chart-1)',
+    label: "金額",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
 
@@ -52,9 +40,7 @@ export function MonthlyChart({ data }: Props) {
           <CardTitle className="text-base">月別推移</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            データがありません
-          </div>
+          <div className="flex h-[300px] items-center justify-center text-muted-foreground">データがありません</div>
         </CardContent>
       </Card>
     );
@@ -74,9 +60,7 @@ export function MonthlyChart({ data }: Props) {
               <YAxis tickFormatter={formatAmount} tick={{ fontSize: 12 }} />
               <ChartTooltip
                 content={
-                  <ChartTooltipContent
-                    formatter={(value) => [`¥${Number(value).toLocaleString()}`, '支払い金額']}
-                  />
+                  <ChartTooltipContent formatter={(value) => [`¥${Number(value).toLocaleString()}`, "支払い金額"]} />
                 }
               />
               <Line
@@ -84,7 +68,7 @@ export function MonthlyChart({ data }: Props) {
                 dataKey="totalAmount"
                 stroke="var(--color-totalAmount)"
                 strokeWidth={2}
-                dot={{ fill: 'var(--color-totalAmount)' }}
+                dot={{ fill: "var(--color-totalAmount)" }}
               />
             </LineChart>
           </ResponsiveContainer>

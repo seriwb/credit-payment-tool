@@ -1,12 +1,8 @@
-'use client';
+"use client";
 
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { AppSidebar } from './app-sidebar';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./app-sidebar";
 
 type Props = {
   children: React.ReactNode;
@@ -16,7 +12,7 @@ export function MainLayout({ children }: Props) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="md:ml-64 md:peer-data-[state=collapsed]:ml-0 transition-[margin] duration-200">
+      <SidebarInset className="transition-[margin] duration-200 md:ml-64 md:peer-data-[state=collapsed]:ml-0">
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />

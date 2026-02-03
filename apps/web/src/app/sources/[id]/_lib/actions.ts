@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 // 支払い元詳細の型
 export type SourceDetailData = {
@@ -46,9 +46,7 @@ export type SourceDetailResult = {
 /**
  * 支払い元詳細を取得
  */
-export async function getSourceDetail(
-  id: string
-): Promise<SourceDetailResult | null> {
+export async function getSourceDetail(id: string): Promise<SourceDetailResult | null> {
   const source = await prisma.paymentSource.findUnique({
     where: { id },
     include: {
@@ -66,7 +64,7 @@ export async function getSourceDetail(
           yearMonth: true,
         },
         orderBy: {
-          paymentDate: 'desc',
+          paymentDate: "desc",
         },
       },
     },

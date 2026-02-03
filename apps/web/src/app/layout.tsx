@@ -1,12 +1,11 @@
-import '@/styles/globals.css';
-
-import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/sonner';
-import { MainLayout } from '@/components/layout/main-layout';
+import type { Metadata } from "next";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Toaster } from "@/components/ui/sonner";
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: 'ゴールドポイントカード管理ツール',
-  description: 'ヨドバシゴールドポイントカードの支払い履歴を管理・分析するツール',
+  title: "ゴールドポイントカード管理ツール",
+  description: "ヨドバシゴールドポイントカードの支払い履歴を管理・分析するツール",
 };
 
 type Props = {
