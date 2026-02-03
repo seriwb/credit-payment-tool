@@ -28,11 +28,19 @@ export type SourceSummary = {
   averageAmount: number;
 };
 
+// 年ごとの合計の型
+export type YearlyTotal = {
+  year: number;
+  paymentCount: number;
+  totalAmount: number;
+};
+
 // 取得結果の型
 export type SourceDetailResult = {
   source: SourceDetailData;
   payments: PaymentItem[];
   summary: SourceSummary;
+  yearlyTotals: YearlyTotal[];
 };
 
 /**
@@ -79,6 +87,26 @@ export async function getSourceDetail(
   const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
   const paymentCount = payments.length;
 
+  // 年ごとの集計を計算
+  const yearlyMap = new Map<number, { paymentCount: number; totalAmount: number }>();
+  for (const payment of payments) {
+    const year = new Date(payment.paymentDate).getFullYear();
+    const existing = yearlyMap.get(year) || { paymentCount: 0, totalAmount: 0 };
+    yearlyMap.set(year, {
+      paymentCount: existing.paymentCount + 1,
+      totalAmount: existing.totalAmount + payment.amount,
+    });
+  }
+
+  // 年の降順でソート
+  const yearlyTotals: YearlyTotal[] = Array.from(yearlyMap.entries())
+    .map(([year, data]) => ({
+      year,
+      paymentCount: data.paymentCount,
+      totalAmount: data.totalAmount,
+    }))
+    .sort((a, b) => b.year - a.year);
+
   return {
     source: {
       id: source.id,
@@ -94,5 +122,6 @@ export async function getSourceDetail(
       totalAmount,
       averageAmount: paymentCount > 0 ? Math.round(totalAmount / paymentCount) : 0,
     },
+    yearlyTotals,
   };
 }

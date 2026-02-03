@@ -10,6 +10,7 @@ export type PaymentSourceDetail = {
   categoryName: string | null;
   paymentCount: number;
   totalAmount: number;
+  lastPaymentDate: Date | null;
 };
 
 // カテゴリの型
@@ -18,30 +19,66 @@ export type CategoryOption = {
   name: string;
 };
 
+// フィルター条件の型
+export type SourceFilterParams = {
+  name?: string; // 支払い元名（前方一致）
+  categoryId?: string | null; // カテゴリID（nullは未分類）
+};
+
 /**
- * 支払い元一覧を取得
+ * 支払い元一覧を取得（フィルター対応）
  */
-export async function getPaymentSources(): Promise<PaymentSourceDetail[]> {
+export async function getPaymentSources(
+  filter?: SourceFilterParams
+): Promise<PaymentSourceDetail[]> {
+  // フィルター条件を構築
+  const where: {
+    name?: { startsWith: string; mode: 'insensitive' };
+    categoryId?: string | null;
+  } = {};
+
+  if (filter?.name) {
+    where.name = { startsWith: filter.name, mode: 'insensitive' };
+  }
+
+  // categoryIdが明示的に指定されている場合のみフィルター
+  if (filter?.categoryId !== undefined) {
+    where.categoryId = filter.categoryId;
+  }
+
   const sources = await prisma.paymentSource.findMany({
+    where,
     include: {
       category: true,
       payments: {
         select: {
           amount: true,
+          paymentDate: true,
         },
       },
     },
     orderBy: { name: 'asc' },
   });
 
-  return sources.map((source) => ({
-    id: source.id,
-    name: source.name,
-    categoryId: source.categoryId,
-    categoryName: source.category?.name ?? null,
-    paymentCount: source.payments.length,
-    totalAmount: source.payments.reduce((sum, p) => sum + p.amount, 0),
-  }));
+  return sources.map((source) => {
+    // 最新の支払日を取得
+    const lastPaymentDate =
+      source.payments.length > 0
+        ? source.payments.reduce((latest, p) => {
+            return p.paymentDate > latest ? p.paymentDate : latest;
+          }, source.payments[0].paymentDate)
+        : null;
+
+    return {
+      id: source.id,
+      name: source.name,
+      categoryId: source.categoryId,
+      categoryName: source.category?.name ?? null,
+      paymentCount: source.payments.length,
+      totalAmount: source.payments.reduce((sum, p) => sum + p.amount, 0),
+      lastPaymentDate,
+    };
+  });
 }
 
 /**

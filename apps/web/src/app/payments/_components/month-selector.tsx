@@ -24,7 +24,7 @@ export function MonthSelector({ yearMonths, selectedMonth, onMonthChange }: Prop
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="年月を選択" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="max-h-[400px]">
         {yearMonths.map((ym) => (
           <SelectItem key={ym} value={ym}>
             {formatYearMonth(ym)}

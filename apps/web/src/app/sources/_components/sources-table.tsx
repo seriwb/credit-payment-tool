@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useCallback, useTransition } from 'react';
+import { useState, useCallback, useTransition, useMemo } from 'react';
 import Link from 'next/link';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,15 @@ import {
   type CategoryOption,
 } from '../_lib/actions';
 
+// ソート関連の型
+type SortKey =
+  | 'name'
+  | 'categoryName'
+  | 'paymentCount'
+  | 'lastPaymentDate'
+  | 'totalAmount';
+type SortOrder = 'asc' | 'desc';
+
 type Props = {
   sources: PaymentSourceDetail[];
   categories: CategoryOption[];
@@ -39,10 +49,82 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkCategoryId, setBulkCategoryId] = useState<string>('');
   const [isPending, startTransition] = useTransition();
+  const [sortKey, setSortKey] = useState<SortKey>('name');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const formatAmount = (amount: number) => {
     return `¥${amount.toLocaleString()}`;
   };
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('ja-JP');
+  };
+
+  // ソートアイコンを取得
+  const getSortIcon = (key: SortKey) => {
+    if (sortKey !== key) {
+      return <ArrowUpDown className="ml-1 h-4 w-4 inline" />;
+    }
+    return sortOrder === 'asc' ? (
+      <ArrowUp className="ml-1 h-4 w-4 inline" />
+    ) : (
+      <ArrowDown className="ml-1 h-4 w-4 inline" />
+    );
+  };
+
+  // ソートのトグル
+  const handleSort = useCallback(
+    (key: SortKey) => {
+      if (sortKey === key) {
+        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      } else {
+        setSortKey(key);
+        setSortOrder('asc');
+      }
+    },
+    [sortKey]
+  );
+
+  // ソートされたデータ
+  const sortedSources = useMemo(() => {
+    return [...sources].sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortKey) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name, 'ja');
+          break;
+        case 'categoryName':
+          // nullは最後にソート
+          if (a.categoryName === null && b.categoryName === null) comparison = 0;
+          else if (a.categoryName === null) comparison = 1;
+          else if (b.categoryName === null) comparison = -1;
+          else comparison = a.categoryName.localeCompare(b.categoryName, 'ja');
+          break;
+        case 'paymentCount':
+          comparison = a.paymentCount - b.paymentCount;
+          break;
+        case 'lastPaymentDate':
+          // nullは最後にソート
+          if (a.lastPaymentDate === null && b.lastPaymentDate === null)
+            comparison = 0;
+          else if (a.lastPaymentDate === null) comparison = 1;
+          else if (b.lastPaymentDate === null) comparison = -1;
+          else {
+            const dateA = new Date(a.lastPaymentDate).getTime();
+            const dateB = new Date(b.lastPaymentDate).getTime();
+            comparison = dateA - dateB;
+          }
+          break;
+        case 'totalAmount':
+          comparison = a.totalAmount - b.totalAmount;
+          break;
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  }, [sources, sortKey, sortOrder]);
 
   const handleSelectAll = useCallback(
     (checked: boolean) => {
@@ -128,7 +210,7 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="カテゴリ" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[250px]">
                   <SelectItem value="none">未分類</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
@@ -168,14 +250,55 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
                     onCheckedChange={handleSelectAll}
                   />
                 </TableHead>
-                <TableHead>支払い元</TableHead>
-                <TableHead>カテゴリ</TableHead>
-                <TableHead className="text-right">件数</TableHead>
-                <TableHead className="text-right">合計金額</TableHead>
+                <TableHead>
+                  <button
+                    type="button"
+                    className="flex items-center hover:text-foreground"
+                    onClick={() => handleSort('name')}
+                  >
+                    支払い元{getSortIcon('name')}
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    type="button"
+                    className="flex items-center hover:text-foreground"
+                    onClick={() => handleSort('categoryName')}
+                  >
+                    カテゴリ{getSortIcon('categoryName')}
+                  </button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <button
+                    type="button"
+                    className="flex items-center justify-end w-full hover:text-foreground"
+                    onClick={() => handleSort('paymentCount')}
+                  >
+                    件数{getSortIcon('paymentCount')}
+                  </button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <button
+                    type="button"
+                    className="flex items-center justify-end w-full hover:text-foreground"
+                    onClick={() => handleSort('lastPaymentDate')}
+                  >
+                    最終支払日{getSortIcon('lastPaymentDate')}
+                  </button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <button
+                    type="button"
+                    className="flex items-center justify-end w-full hover:text-foreground"
+                    onClick={() => handleSort('totalAmount')}
+                  >
+                    合計金額{getSortIcon('totalAmount')}
+                  </button>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sources.map((source) => (
+              {sortedSources.map((source) => (
                 <TableRow key={source.id}>
                   <TableCell>
                     <Checkbox
@@ -210,7 +333,7 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
                           )}
                         </SelectValue>
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-[250px]">
                         <SelectItem value="none">未分類</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
@@ -222,6 +345,9 @@ export function SourcesTable({ sources, categories, onRefresh }: Props) {
                   </TableCell>
                   <TableCell className="text-right">
                     {source.paymentCount.toLocaleString()}件
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    {formatDate(source.lastPaymentDate)}
                   </TableCell>
                   <TableCell className="text-right font-mono">
                     {formatAmount(source.totalAmount)}

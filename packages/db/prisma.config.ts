@@ -6,7 +6,7 @@ export default defineConfig({
   schema: path.join(__dirname, 'prisma/schema.prisma'),
   migrations: {
     path: path.join(__dirname, 'prisma/migrations'),
-    seed: 'tsx prisma/seed.ts', // シードデータの作成
+    seed: 'tsx prisma/seed.ts',
   },
   datasource: {
     url: env('DATABASE_URL'),

@@ -1,7 +1,15 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { SourcePaymentsTable } from './source-payments-table';
 import type { SourceDetailResult } from '../_lib/actions';
 
@@ -17,7 +25,7 @@ function formatAmount(amount: number): string {
 }
 
 export function SourceDetailView({ data }: Props) {
-  const { source, payments, summary } = data;
+  const { source, payments, summary, yearlyTotals } = data;
 
   return (
     <div className="space-y-6">
@@ -70,6 +78,39 @@ export function SourceDetailView({ data }: Props) {
           </CardContent>
         </Card>
       </div>
+
+      {/* 年ごとの支払い合計 */}
+      {yearlyTotals.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">年ごとの支払い合計</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>年</TableHead>
+                  <TableHead className="text-right">件数</TableHead>
+                  <TableHead className="text-right">合計金額</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {yearlyTotals.map((yearly) => (
+                  <TableRow key={yearly.year}>
+                    <TableCell className="font-medium">{yearly.year}年</TableCell>
+                    <TableCell className="text-right">
+                      {yearly.paymentCount.toLocaleString()}件
+                    </TableCell>
+                    <TableCell className="text-right font-mono">
+                      {formatAmount(yearly.totalAmount)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
 
       {/* 支払い一覧テーブル */}
       <SourcePaymentsTable payments={payments} summary={summary} />
