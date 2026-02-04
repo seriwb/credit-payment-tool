@@ -46,7 +46,9 @@ export type SourceDetailResult = {
 /**
  * 支払い元詳細を取得
  */
-export async function getSourceDetail(id: string): Promise<SourceDetailResult | null> {
+export async function getSourceDetail(id: string, cardTypeId?: string): Promise<SourceDetailResult | null> {
+  const paymentWhere = cardTypeId ? { cardTypeId } : {};
+
   const source = await prisma.paymentSource.findUnique({
     where: { id },
     include: {
@@ -63,6 +65,7 @@ export async function getSourceDetail(id: string): Promise<SourceDetailResult | 
           quantity: true,
           yearMonth: true,
         },
+        where: paymentWhere,
         orderBy: {
           paymentDate: "desc",
         },

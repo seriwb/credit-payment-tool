@@ -2,9 +2,13 @@
 
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
+import { getCardTypes } from "@/app/_lib/actions";
 import prisma from "@/lib/prisma";
-import { parseCSV } from "./csv-parser";
+import { getParser } from "./parsers";
 import type { ImportHistory, ImportResult } from "./types";
+
+// 共有のカード種別取得を再エクスポート
+export { getCardTypes };
 
 /**
  * インポート履歴を取得
@@ -13,6 +17,7 @@ export async function getImportHistory(): Promise<ImportHistory[]> {
   const files = await prisma.importedFile.findMany({
     orderBy: { importedAt: "desc" },
     include: {
+      cardType: { select: { name: true } },
       _count: {
         select: { payments: true },
       },
@@ -25,6 +30,7 @@ export async function getImportHistory(): Promise<ImportHistory[]> {
     yearMonth: file.yearMonth,
     importedAt: file.importedAt,
     paymentCount: file._count.payments,
+    cardTypeName: file.cardType.name,
   }));
 }
 
@@ -33,23 +39,45 @@ export async function getImportHistory(): Promise<ImportHistory[]> {
  */
 export async function importCsvFile(formData: FormData): Promise<ImportResult[]> {
   const files = formData.getAll("files") as File[];
+  const cardTypeCode = formData.get("cardTypeCode") as string;
   const results: ImportResult[] = [];
+
+  if (!cardTypeCode) {
+    return [{ success: false, fileName: "", message: "カード種別が指定されていません" }];
+  }
+
+  // カード種別を取得
+  const cardType = await prisma.cardType.findUnique({
+    where: { code: cardTypeCode },
+  });
+
+  if (!cardType) {
+    return [{ success: false, fileName: "", message: "不正なカード種別です" }];
+  }
+
+  // パーサーを取得
+  const parser = getParser(cardTypeCode);
 
   for (const file of files) {
     try {
       // ファイル名バリデーション
-      if (!/^\d{6}(-\d+)?\.csv$/.test(file.name)) {
+      if (!parser.isValidFileName(file.name)) {
         results.push({
           success: false,
           fileName: file.name,
-          message: "ファイル名は YYYYMM.csv または YYYYMM-num.csv 形式である必要があります",
+          message: "ファイル名形式が不正です",
         });
         continue;
       }
 
-      // 重複チェック
+      // 重複チェック（composite unique）
       const existingFile = await prisma.importedFile.findUnique({
-        where: { fileName: file.name },
+        where: {
+          fileName_cardTypeId: {
+            fileName: file.name,
+            cardTypeId: cardType.id,
+          },
+        },
       });
 
       if (existingFile) {
@@ -63,21 +91,22 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
 
       // CSVパース
       const buffer = await file.arrayBuffer();
-      const parseResult = parseCSV(buffer, file.name);
+      const parseResult = parser.parse(buffer, file.name);
 
       // トランザクションで保存
-      const importedFile = await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx) => {
         // インポートファイル作成
         const newFile = await tx.importedFile.create({
           data: {
             fileName: file.name,
+            cardTypeId: cardType.id,
             yearMonth: parseResult.yearMonth,
           },
         });
 
         // 支払い元マスタと支払い明細を登録
         for (const payment of parseResult.payments) {
-          // 支払い元をupsert
+          // 支払い元をupsert（カード種別横断で共有）
           const paymentSource = await tx.paymentSource.upsert({
             where: { name: payment.sourceName },
             update: {},
@@ -89,6 +118,7 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
             data: {
               importedFileId: newFile.id,
               paymentSourceId: paymentSource.id,
+              cardTypeId: cardType.id,
               paymentDate: payment.paymentDate,
               amount: payment.amount,
               quantity: payment.quantity,
@@ -96,8 +126,6 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
             },
           });
         }
-
-        return newFile;
       });
 
       results.push({
@@ -105,6 +133,7 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
         fileName: file.name,
         message: "インポート完了",
         paymentCount: parseResult.payments.length,
+        cardTypeName: cardType.name,
       });
     } catch (error) {
       results.push({
@@ -121,8 +150,24 @@ export async function importCsvFile(formData: FormData): Promise<ImportResult[]>
 /**
  * ディレクトリからCSVファイルをインポート
  */
-export async function importFromDirectory(path: string): Promise<ImportResult[]> {
+export async function importFromDirectory(path: string, cardTypeCode: string): Promise<ImportResult[]> {
   const results: ImportResult[] = [];
+
+  if (!cardTypeCode) {
+    return [{ success: false, fileName: path, message: "カード種別が指定されていません" }];
+  }
+
+  // カード種別を取得
+  const cardType = await prisma.cardType.findUnique({
+    where: { code: cardTypeCode },
+  });
+
+  if (!cardType) {
+    return [{ success: false, fileName: path, message: "不正なカード種別です" }];
+  }
+
+  // パーサーを取得
+  const parser = getParser(cardTypeCode);
 
   try {
     // ディレクトリの存在確認
@@ -137,8 +182,8 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
       ];
     }
 
-    // CSVファイルを検索
-    const fileNames = readdirSync(path).filter((name) => /^\d{6}(-\d+)?\.csv$/.test(name));
+    // CSVファイルを検索（パーサーのバリデーションを使用）
+    const fileNames = readdirSync(path).filter((name) => parser.isValidFileName(name));
 
     if (fileNames.length === 0) {
       return [
@@ -153,9 +198,14 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
     // 各ファイルをインポート
     for (const fileName of fileNames) {
       try {
-        // 重複チェック
+        // 重複チェック（composite unique）
         const existingFile = await prisma.importedFile.findUnique({
-          where: { fileName },
+          where: {
+            fileName_cardTypeId: {
+              fileName,
+              cardTypeId: cardType.id,
+            },
+          },
         });
 
         if (existingFile) {
@@ -176,7 +226,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
         );
 
         // CSVパース
-        const parseResult = parseCSV(arrayBuffer, fileName);
+        const parseResult = parser.parse(arrayBuffer, fileName);
 
         // トランザクションで保存
         await prisma.$transaction(async (tx) => {
@@ -184,13 +234,14 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
           const newFile = await tx.importedFile.create({
             data: {
               fileName,
+              cardTypeId: cardType.id,
               yearMonth: parseResult.yearMonth,
             },
           });
 
           // 支払い元マスタと支払い明細を登録
           for (const payment of parseResult.payments) {
-            // 支払い元をupsert
+            // 支払い元をupsert（カード種別横断で共有）
             const paymentSource = await tx.paymentSource.upsert({
               where: { name: payment.sourceName },
               update: {},
@@ -202,6 +253,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
               data: {
                 importedFileId: newFile.id,
                 paymentSourceId: paymentSource.id,
+                cardTypeId: cardType.id,
                 paymentDate: payment.paymentDate,
                 amount: payment.amount,
                 quantity: payment.quantity,
@@ -216,6 +268,7 @@ export async function importFromDirectory(path: string): Promise<ImportResult[]>
           fileName,
           message: "インポート完了",
           paymentCount: parseResult.payments.length,
+          cardTypeName: cardType.name,
         });
       } catch (error) {
         results.push({

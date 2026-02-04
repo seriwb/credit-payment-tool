@@ -8,8 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/ImportedFile.js'
-export type * from './models/PaymentSource.js'
-export type * from './models/Category.js'
-export type * from './models/Payment.js'
-export type * from './commonInputTypes.js'
+export type * from './models/CardType.ts'
+export type * from './models/ImportedFile.ts'
+export type * from './models/PaymentSource.ts'
+export type * from './models/Category.ts'
+export type * from './models/Payment.ts'
+export type * from './commonInputTypes.ts'

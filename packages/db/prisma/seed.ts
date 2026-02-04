@@ -1,5 +1,6 @@
-import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaClient } from './generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { CARD_TYPES } from './seeds/card-types';
 import { CATEGORIES } from './seeds/categories';
 import 'dotenv/config';
 
@@ -13,6 +14,16 @@ const prisma = new PrismaClient({
 
 async function main() {
   console.log('Seeding database...');
+
+  // カード種別の初期データ投入
+  for (const cardType of CARD_TYPES) {
+    await prisma.cardType.upsert({
+      where: { code: cardType.code },
+      update: {},
+      create: cardType,
+    });
+  }
+  console.log(`Created ${CARD_TYPES.length} card types`);
 
   // カテゴリの初期データ投入
   for (const category of CATEGORIES) {

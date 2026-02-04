@@ -1,3 +1,4 @@
+import { getCardTypes } from "@/app/_lib/actions";
 import { PaymentsView } from "./_components/payments-view";
 import { getAvailableYearMonths, getPaymentsByMonth } from "./_lib/actions";
 
@@ -7,7 +8,7 @@ type Props = {
 
 export default async function PaymentsPage({ searchParams }: Props) {
   const params = await searchParams;
-  const yearMonths = await getAvailableYearMonths();
+  const [yearMonths, cardTypes] = await Promise.all([getAvailableYearMonths(), getCardTypes()]);
   const selectedMonth = params.month || yearMonths[0] || null;
 
   let payments: Awaited<ReturnType<typeof getPaymentsByMonth>>["payments"] = [];
@@ -30,6 +31,7 @@ export default async function PaymentsPage({ searchParams }: Props) {
         initialPayments={payments}
         initialTotalAmount={totalAmount}
         initialYearMonth={selectedMonth}
+        cardTypes={cardTypes}
       />
     </div>
   );

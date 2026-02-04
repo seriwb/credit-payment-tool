@@ -1,4 +1,4 @@
-# @gold-point-tool/db - データベースパッケージ
+# @credit-payment-tool/db - データベースパッケージ
 
 Prisma 7を使用したデータベーススキーマ・マイグレーション管理。
 
@@ -64,7 +64,7 @@ yarn reset
 `.env`ファイルを作成:
 
 ```env
-DATABASE_URL="postgresql://admin:admin@localhost:35432/goldpoint?schema=public"
+DATABASE_URL="postgresql://admin:admin@localhost:35432/payment?schema=public"
 ```
 
 ## 初期カテゴリ
@@ -82,5 +82,5 @@ DATABASE_URL="postgresql://admin:admin@localhost:35432/goldpoint?schema=public"
 ## データベース接続
 
 ```bash
-psql postgresql://admin:admin@localhost:35432/goldpoint
+psql postgresql://admin:admin@localhost:35432/payment
 ```

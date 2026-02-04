@@ -4,9 +4,11 @@ import { useCallback, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { CardTypeFilter } from "@/components/shared/card-type-filter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { type SourceData, getSourceAnalytics } from "../../_lib/actions";
+import type { CardTypeOption } from "@/types/application";
+import { type SourceData, getSourceAnalytics, getYearMonthRange } from "../../_lib/actions";
 import { SourcesChart } from "./sources-chart";
 import { SourcesTable } from "./sources-table";
 
@@ -15,21 +17,28 @@ type Props = {
   yearMonths: string[];
   initialStartMonth?: string;
   initialEndMonth?: string;
+  cardTypes: CardTypeOption[];
 };
 
-export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, initialEndMonth }: Props) {
+export function SourcesDetailView({
+  initialData,
+  yearMonths: initialYearMonths,
+  initialStartMonth,
+  initialEndMonth,
+  cardTypes,
+}: Props) {
   const router = useRouter();
   const [data, setData] = useState(initialData);
+  const [yearMonths, setYearMonths] = useState(initialYearMonths);
   const [startMonth, setStartMonth] = useState<string>(initialStartMonth ?? "");
   const [endMonth, setEndMonth] = useState<string>(initialEndMonth ?? "");
+  const [selectedCardTypeId, setSelectedCardTypeId] = useState<string>("all");
   const [isPending, startTransition] = useTransition();
 
-  // 年月をフォーマット
   const formatYearMonth = (yearMonth: string) => {
     return `${yearMonth.slice(0, 4)}年${yearMonth.slice(4, 6)}月`;
   };
 
-  // URLを更新
   const updateUrl = useCallback(
     (start: string, end: string) => {
       const params = new URLSearchParams();
@@ -41,16 +50,19 @@ export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, 
     [router]
   );
 
-  // 期間変更ハンドラー
-  const handlePeriodChange = useCallback(
-    (start: string, end: string) => {
+  const fetchData = useCallback(
+    (start: string, end: string, cardTypeId: string) => {
       startTransition(async () => {
         const startYM = start || undefined;
         const endYM = end || undefined;
+        const ctId = cardTypeId === "all" ? undefined : cardTypeId;
 
-        // 全件取得（limitを大きな値に）
-        const sourceData = await getSourceAnalytics(startYM, endYM, 10000);
+        const [sourceData, ymRange] = await Promise.all([
+          getSourceAnalytics(startYM, endYM, 10000, ctId),
+          getYearMonthRange(ctId),
+        ]);
         setData(sourceData);
+        setYearMonths(ymRange.all);
         updateUrl(start, end);
       });
     },
@@ -61,27 +73,33 @@ export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, 
     (value: string) => {
       const newStart = value === "all" ? "" : value;
       setStartMonth(newStart);
-      handlePeriodChange(newStart, endMonth);
+      fetchData(newStart, endMonth, selectedCardTypeId);
     },
-    [endMonth, handlePeriodChange]
+    [endMonth, selectedCardTypeId, fetchData]
   );
 
   const handleEndChange = useCallback(
     (value: string) => {
       const newEnd = value === "all" ? "" : value;
       setEndMonth(newEnd);
-      handlePeriodChange(startMonth, newEnd);
+      fetchData(startMonth, newEnd, selectedCardTypeId);
     },
-    [startMonth, handlePeriodChange]
+    [startMonth, selectedCardTypeId, fetchData]
   );
 
-  // サマリー計算
+  const handleCardTypeChange = useCallback(
+    (cardTypeId: string) => {
+      setSelectedCardTypeId(cardTypeId);
+      fetchData(startMonth, endMonth, cardTypeId);
+    },
+    [startMonth, endMonth, fetchData]
+  );
+
   const totalAmount = data.reduce((sum, item) => sum + item.totalAmount, 0);
   const totalCount = data.reduce((sum, item) => sum + item.paymentCount, 0);
 
   return (
     <div className="space-y-6">
-      {/* 戻るリンク */}
       <Link
         href="/analytics"
         className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -90,7 +108,16 @@ export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, 
         分析ページに戻る
       </Link>
 
-      {/* 期間選択 */}
+      <div className="flex items-center gap-4">
+        <CardTypeFilter
+          cardTypes={cardTypes}
+          selectedCardTypeId={selectedCardTypeId}
+          onCardTypeChange={handleCardTypeChange}
+          disabled={isPending}
+        />
+        {isPending && <span className="text-sm text-muted-foreground">読み込み中...</span>}
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">期間選択</CardTitle>
@@ -130,12 +157,10 @@ export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, 
                 </SelectContent>
               </Select>
             </div>
-            {isPending && <span className="ml-4 text-sm text-muted-foreground">読み込み中...</span>}
           </div>
         </CardContent>
       </Card>
 
-      {/* サマリー */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
@@ -163,10 +188,8 @@ export function SourcesDetailView({ initialData, yearMonths, initialStartMonth, 
         </Card>
       </div>
 
-      {/* グラフ */}
       <SourcesChart data={data} />
 
-      {/* テーブル */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">支払い元一覧</CardTitle>

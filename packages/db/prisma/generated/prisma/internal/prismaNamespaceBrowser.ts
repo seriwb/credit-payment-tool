@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.js'
-export type * from './prismaNamespace.js'
+export type * from '../models.ts'
+export type * from './prismaNamespace.ts'
 
 export const Decimal = runtime.Decimal
 
@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  CardType: 'CardType',
   ImportedFile: 'ImportedFile',
   PaymentSource: 'PaymentSource',
   Category: 'Category',
@@ -73,9 +74,22 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const CardTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CardTypeScalarFieldEnum = (typeof CardTypeScalarFieldEnum)[keyof typeof CardTypeScalarFieldEnum]
+
+
 export const ImportedFileScalarFieldEnum = {
   id: 'id',
   fileName: 'fileName',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth',
   importedAt: 'importedAt'
 } as const
@@ -109,6 +123,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   importedFileId: 'importedFileId',
   paymentSourceId: 'paymentSourceId',
+  cardTypeId: 'cardTypeId',
   paymentDate: 'paymentDate',
   amount: 'amount',
   quantity: 'quantity',
@@ -135,9 +150,19 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const CardTypeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name'
+} as const
+
+export type CardTypeOrderByRelevanceFieldEnum = (typeof CardTypeOrderByRelevanceFieldEnum)[keyof typeof CardTypeOrderByRelevanceFieldEnum]
+
+
 export const ImportedFileOrderByRelevanceFieldEnum = {
   id: 'id',
   fileName: 'fileName',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth'
 } as const
 
@@ -173,6 +198,7 @@ export const PaymentOrderByRelevanceFieldEnum = {
   id: 'id',
   importedFileId: 'importedFileId',
   paymentSourceId: 'paymentSourceId',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth'
 } as const
 

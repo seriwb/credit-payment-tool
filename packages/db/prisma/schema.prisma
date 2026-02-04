@@ -2,24 +2,45 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated/prisma"
-  previewFeatures = ["fullTextSearchPostgres"]
+  provider               = "prisma-client"
+  output                 = "./generated/prisma"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+  previewFeatures        = ["fullTextSearchPostgres"]
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// カード種別マスタ
+model CardType {
+  id            String         @id @default(cuid())
+  code          String         @unique // パーサー識別用: "yodobashi", "paypay"
+  name          String         @unique // 表示名: "ヨドバシゴールドポイントカード"
+  displayOrder  Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  importedFiles ImportedFile[]
+  payments      Payment[]
+
+  @@map("card_types")
+}
+
 // インポート済みファイル管理
 model ImportedFile {
   id         String    @id @default(cuid())
-  fileName   String    @unique
+  fileName   String
+  cardTypeId String
+  cardType   CardType  @relation(fields: [cardTypeId], references: [id])
   yearMonth  String // YYYYMM形式
   importedAt DateTime  @default(now())
   payments   Payment[]
 
+  @@unique([fileName, cardTypeId])
   @@index([yearMonth])
+  @@index([cardTypeId])
   @@map("imported_files")
 }
 
@@ -56,6 +77,8 @@ model Payment {
   importedFile    ImportedFile  @relation(fields: [importedFileId], references: [id], onDelete: Cascade)
   paymentSourceId String
   paymentSource   PaymentSource @relation(fields: [paymentSourceId], references: [id])
+  cardTypeId      String
+  cardType        CardType      @relation(fields: [cardTypeId], references: [id])
   paymentDate     DateTime
   amount          Int
   quantity        Int           @default(1)
@@ -66,5 +89,6 @@ model Payment {
   @@index([yearMonth])
   @@index([paymentDate])
   @@index([importedFileId])
+  @@index([cardTypeId])
   @@map("payments")
 }

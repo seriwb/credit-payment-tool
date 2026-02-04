@@ -12,7 +12,7 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace.ts"
 
 
 const config: runtime.GetPrismaClientConfig = {
@@ -22,7 +22,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider        = \"prisma-client\"\n  output          = \"../src/generated/prisma\"\n  previewFeatures = [\"fullTextSearchPostgres\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// インポート済みファイル管理\nmodel ImportedFile {\n  id         String    @id @default(cuid())\n  fileName   String    @unique\n  yearMonth  String // YYYYMM形式\n  importedAt DateTime  @default(now())\n  payments   Payment[]\n\n  @@index([yearMonth])\n  @@map(\"imported_files\")\n}\n\n// 支払い元マスタ\nmodel PaymentSource {\n  id         String    @id @default(cuid())\n  name       String    @unique\n  categoryId String?\n  category   Category? @relation(fields: [categoryId], references: [id])\n  createdAt  DateTime  @default(now())\n  updatedAt  DateTime  @updatedAt\n  payments   Payment[]\n\n  @@index([categoryId])\n  @@map(\"payment_sources\")\n}\n\n// カテゴリマスタ\nmodel Category {\n  id             String          @id @default(cuid())\n  name           String          @unique\n  displayOrder   Int             @default(0)\n  createdAt      DateTime        @default(now())\n  updatedAt      DateTime        @updatedAt\n  paymentSources PaymentSource[]\n\n  @@map(\"categories\")\n}\n\n// 支払い明細\nmodel Payment {\n  id              String        @id @default(cuid())\n  importedFileId  String\n  importedFile    ImportedFile  @relation(fields: [importedFileId], references: [id], onDelete: Cascade)\n  paymentSourceId String\n  paymentSource   PaymentSource @relation(fields: [paymentSourceId], references: [id])\n  paymentDate     DateTime\n  amount          Int\n  quantity        Int           @default(1)\n  yearMonth       String // YYYYMM形式（集計用）\n  createdAt       DateTime      @default(now())\n\n  @@index([paymentSourceId])\n  @@index([yearMonth])\n  @@index([paymentDate])\n  @@index([importedFileId])\n  @@map(\"payments\")\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider               = \"prisma-client\"\n  output                 = \"./generated/prisma\"\n  moduleFormat           = \"esm\"\n  generatedFileExtension = \"ts\"\n  importFileExtension    = \"ts\"\n  previewFeatures        = [\"fullTextSearchPostgres\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// カード種別マスタ\nmodel CardType {\n  id            String         @id @default(cuid())\n  code          String         @unique // パーサー識別用: \"yodobashi\", \"paypay\"\n  name          String         @unique // 表示名: \"ヨドバシゴールドポイントカード\"\n  displayOrder  Int            @default(0)\n  createdAt     DateTime       @default(now())\n  updatedAt     DateTime       @updatedAt\n  importedFiles ImportedFile[]\n  payments      Payment[]\n\n  @@map(\"card_types\")\n}\n\n// インポート済みファイル管理\nmodel ImportedFile {\n  id         String    @id @default(cuid())\n  fileName   String\n  cardTypeId String\n  cardType   CardType  @relation(fields: [cardTypeId], references: [id])\n  yearMonth  String // YYYYMM形式\n  importedAt DateTime  @default(now())\n  payments   Payment[]\n\n  @@unique([fileName, cardTypeId])\n  @@index([yearMonth])\n  @@index([cardTypeId])\n  @@map(\"imported_files\")\n}\n\n// 支払い元マスタ\nmodel PaymentSource {\n  id         String    @id @default(cuid())\n  name       String    @unique\n  categoryId String?\n  category   Category? @relation(fields: [categoryId], references: [id])\n  createdAt  DateTime  @default(now())\n  updatedAt  DateTime  @updatedAt\n  payments   Payment[]\n\n  @@index([categoryId])\n  @@map(\"payment_sources\")\n}\n\n// カテゴリマスタ\nmodel Category {\n  id             String          @id @default(cuid())\n  name           String          @unique\n  displayOrder   Int             @default(0)\n  createdAt      DateTime        @default(now())\n  updatedAt      DateTime        @updatedAt\n  paymentSources PaymentSource[]\n\n  @@map(\"categories\")\n}\n\n// 支払い明細\nmodel Payment {\n  id              String        @id @default(cuid())\n  importedFileId  String\n  importedFile    ImportedFile  @relation(fields: [importedFileId], references: [id], onDelete: Cascade)\n  paymentSourceId String\n  paymentSource   PaymentSource @relation(fields: [paymentSourceId], references: [id])\n  cardTypeId      String\n  cardType        CardType      @relation(fields: [cardTypeId], references: [id])\n  paymentDate     DateTime\n  amount          Int\n  quantity        Int           @default(1)\n  yearMonth       String // YYYYMM形式（集計用）\n  createdAt       DateTime      @default(now())\n\n  @@index([paymentSourceId])\n  @@index([yearMonth])\n  @@index([paymentDate])\n  @@index([importedFileId])\n  @@index([cardTypeId])\n  @@map(\"payments\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -30,7 +30,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"ImportedFile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fileName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"yearMonth\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"ImportedFileToPayment\"}],\"dbName\":\"imported_files\"},\"PaymentSource\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToPaymentSource\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"PaymentToPaymentSource\"}],\"dbName\":\"payment_sources\"},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"displayOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"paymentSources\",\"kind\":\"object\",\"type\":\"PaymentSource\",\"relationName\":\"CategoryToPaymentSource\"}],\"dbName\":\"categories\"},\"Payment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedFileId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedFile\",\"kind\":\"object\",\"type\":\"ImportedFile\",\"relationName\":\"ImportedFileToPayment\"},{\"name\":\"paymentSourceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymentSource\",\"kind\":\"object\",\"type\":\"PaymentSource\",\"relationName\":\"PaymentToPaymentSource\"},{\"name\":\"paymentDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"yearMonth\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"payments\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"CardType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"displayOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"importedFiles\",\"kind\":\"object\",\"type\":\"ImportedFile\",\"relationName\":\"CardTypeToImportedFile\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"CardTypeToPayment\"}],\"dbName\":\"card_types\"},\"ImportedFile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fileName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cardTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cardType\",\"kind\":\"object\",\"type\":\"CardType\",\"relationName\":\"CardTypeToImportedFile\"},{\"name\":\"yearMonth\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"ImportedFileToPayment\"}],\"dbName\":\"imported_files\"},\"PaymentSource\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToPaymentSource\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"PaymentToPaymentSource\"}],\"dbName\":\"payment_sources\"},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"displayOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"paymentSources\",\"kind\":\"object\",\"type\":\"PaymentSource\",\"relationName\":\"CategoryToPaymentSource\"}],\"dbName\":\"categories\"},\"Payment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedFileId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"importedFile\",\"kind\":\"object\",\"type\":\"ImportedFile\",\"relationName\":\"ImportedFileToPayment\"},{\"name\":\"paymentSourceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymentSource\",\"kind\":\"object\",\"type\":\"PaymentSource\",\"relationName\":\"PaymentToPaymentSource\"},{\"name\":\"cardTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cardType\",\"kind\":\"object\",\"type\":\"CardType\",\"relationName\":\"CardTypeToPayment\"},{\"name\":\"paymentDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"yearMonth\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"payments\"}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -62,8 +62,8 @@ export interface PrismaClientConstructor {
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more ImportedFiles
-   * const importedFiles = await prisma.importedFile.findMany()
+   * // Fetch zero or more CardTypes
+   * const cardTypes = await prisma.cardType.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -84,8 +84,8 @@ export interface PrismaClientConstructor {
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more ImportedFiles
- * const importedFiles = await prisma.importedFile.findMany()
+ * // Fetch zero or more CardTypes
+ * const cardTypes = await prisma.cardType.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -179,6 +179,16 @@ export interface PrismaClient<
   }>>
 
       /**
+   * `prisma.cardType`: Exposes CRUD operations for the **CardType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CardTypes
+    * const cardTypes = await prisma.cardType.findMany()
+    * ```
+    */
+  get cardType(): Prisma.CardTypeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
    * `prisma.importedFile`: Exposes CRUD operations for the **ImportedFile** model.
     * Example usage:
     * ```ts

@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -48,15 +49,15 @@ const menuItems = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b px-4 py-3">
+    <Sidebar {...props}>
+      <SidebarHeader className="flex h-14 justify-center border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <CreditCard className="h-5 w-5 text-primary" />
-          <span className="font-semibold">GP管理ツール</span>
+          <span className="font-semibold">カード支払い分析</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -78,6 +79,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarRail />
     </Sidebar>
   );
 }

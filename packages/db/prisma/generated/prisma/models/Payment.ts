@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums.ts"
+import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
  * Model Payment
@@ -40,6 +40,7 @@ export type PaymentMinAggregateOutputType = {
   id: string | null
   importedFileId: string | null
   paymentSourceId: string | null
+  cardTypeId: string | null
   paymentDate: Date | null
   amount: number | null
   quantity: number | null
@@ -51,6 +52,7 @@ export type PaymentMaxAggregateOutputType = {
   id: string | null
   importedFileId: string | null
   paymentSourceId: string | null
+  cardTypeId: string | null
   paymentDate: Date | null
   amount: number | null
   quantity: number | null
@@ -62,6 +64,7 @@ export type PaymentCountAggregateOutputType = {
   id: number
   importedFileId: number
   paymentSourceId: number
+  cardTypeId: number
   paymentDate: number
   amount: number
   quantity: number
@@ -85,6 +88,7 @@ export type PaymentMinAggregateInputType = {
   id?: true
   importedFileId?: true
   paymentSourceId?: true
+  cardTypeId?: true
   paymentDate?: true
   amount?: true
   quantity?: true
@@ -96,6 +100,7 @@ export type PaymentMaxAggregateInputType = {
   id?: true
   importedFileId?: true
   paymentSourceId?: true
+  cardTypeId?: true
   paymentDate?: true
   amount?: true
   quantity?: true
@@ -107,6 +112,7 @@ export type PaymentCountAggregateInputType = {
   id?: true
   importedFileId?: true
   paymentSourceId?: true
+  cardTypeId?: true
   paymentDate?: true
   amount?: true
   quantity?: true
@@ -205,6 +211,7 @@ export type PaymentGroupByOutputType = {
   id: string
   importedFileId: string
   paymentSourceId: string
+  cardTypeId: string
   paymentDate: Date
   amount: number
   quantity: number
@@ -239,6 +246,7 @@ export type PaymentWhereInput = {
   id?: Prisma.StringFilter<"Payment"> | string
   importedFileId?: Prisma.StringFilter<"Payment"> | string
   paymentSourceId?: Prisma.StringFilter<"Payment"> | string
+  cardTypeId?: Prisma.StringFilter<"Payment"> | string
   paymentDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
   amount?: Prisma.IntFilter<"Payment"> | number
   quantity?: Prisma.IntFilter<"Payment"> | number
@@ -246,12 +254,14 @@ export type PaymentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   importedFile?: Prisma.XOR<Prisma.ImportedFileScalarRelationFilter, Prisma.ImportedFileWhereInput>
   paymentSource?: Prisma.XOR<Prisma.PaymentSourceScalarRelationFilter, Prisma.PaymentSourceWhereInput>
+  cardType?: Prisma.XOR<Prisma.CardTypeScalarRelationFilter, Prisma.CardTypeWhereInput>
 }
 
 export type PaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   importedFileId?: Prisma.SortOrder
   paymentSourceId?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   paymentDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -259,6 +269,7 @@ export type PaymentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   importedFile?: Prisma.ImportedFileOrderByWithRelationInput
   paymentSource?: Prisma.PaymentSourceOrderByWithRelationInput
+  cardType?: Prisma.CardTypeOrderByWithRelationInput
   _relevance?: Prisma.PaymentOrderByRelevanceInput
 }
 
@@ -269,6 +280,7 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   importedFileId?: Prisma.StringFilter<"Payment"> | string
   paymentSourceId?: Prisma.StringFilter<"Payment"> | string
+  cardTypeId?: Prisma.StringFilter<"Payment"> | string
   paymentDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
   amount?: Prisma.IntFilter<"Payment"> | number
   quantity?: Prisma.IntFilter<"Payment"> | number
@@ -276,12 +288,14 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   importedFile?: Prisma.XOR<Prisma.ImportedFileScalarRelationFilter, Prisma.ImportedFileWhereInput>
   paymentSource?: Prisma.XOR<Prisma.PaymentSourceScalarRelationFilter, Prisma.PaymentSourceWhereInput>
+  cardType?: Prisma.XOR<Prisma.CardTypeScalarRelationFilter, Prisma.CardTypeWhereInput>
 }, "id">
 
 export type PaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   importedFileId?: Prisma.SortOrder
   paymentSourceId?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   paymentDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -301,6 +315,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   importedFileId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   paymentSourceId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
+  cardTypeId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   paymentDate?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   amount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
   quantity?: Prisma.IntWithAggregatesFilter<"Payment"> | number
@@ -317,12 +332,14 @@ export type PaymentCreateInput = {
   createdAt?: Date | string
   importedFile: Prisma.ImportedFileCreateNestedOneWithoutPaymentsInput
   paymentSource: Prisma.PaymentSourceCreateNestedOneWithoutPaymentsInput
+  cardType: Prisma.CardTypeCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateInput = {
   id?: string
   importedFileId: string
   paymentSourceId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -339,12 +356,14 @@ export type PaymentUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedFile?: Prisma.ImportedFileUpdateOneRequiredWithoutPaymentsNestedInput
   paymentSource?: Prisma.PaymentSourceUpdateOneRequiredWithoutPaymentsNestedInput
+  cardType?: Prisma.CardTypeUpdateOneRequiredWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -356,6 +375,7 @@ export type PaymentCreateManyInput = {
   id?: string
   importedFileId: string
   paymentSourceId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -376,6 +396,7 @@ export type PaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -403,6 +424,7 @@ export type PaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   importedFileId?: Prisma.SortOrder
   paymentSourceId?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   paymentDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -419,6 +441,7 @@ export type PaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   importedFileId?: Prisma.SortOrder
   paymentSourceId?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   paymentDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -430,6 +453,7 @@ export type PaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   importedFileId?: Prisma.SortOrder
   paymentSourceId?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   paymentDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -440,6 +464,48 @@ export type PaymentMinOrderByAggregateInput = {
 export type PaymentSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+}
+
+export type PaymentCreateNestedManyWithoutCardTypeInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput> | Prisma.PaymentCreateWithoutCardTypeInput[] | Prisma.PaymentUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutCardTypeInput | Prisma.PaymentCreateOrConnectWithoutCardTypeInput[]
+  createMany?: Prisma.PaymentCreateManyCardTypeInputEnvelope
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+}
+
+export type PaymentUncheckedCreateNestedManyWithoutCardTypeInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput> | Prisma.PaymentCreateWithoutCardTypeInput[] | Prisma.PaymentUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutCardTypeInput | Prisma.PaymentCreateOrConnectWithoutCardTypeInput[]
+  createMany?: Prisma.PaymentCreateManyCardTypeInputEnvelope
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+}
+
+export type PaymentUpdateManyWithoutCardTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput> | Prisma.PaymentCreateWithoutCardTypeInput[] | Prisma.PaymentUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutCardTypeInput | Prisma.PaymentCreateOrConnectWithoutCardTypeInput[]
+  upsert?: Prisma.PaymentUpsertWithWhereUniqueWithoutCardTypeInput | Prisma.PaymentUpsertWithWhereUniqueWithoutCardTypeInput[]
+  createMany?: Prisma.PaymentCreateManyCardTypeInputEnvelope
+  set?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  disconnect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  delete?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  update?: Prisma.PaymentUpdateWithWhereUniqueWithoutCardTypeInput | Prisma.PaymentUpdateWithWhereUniqueWithoutCardTypeInput[]
+  updateMany?: Prisma.PaymentUpdateManyWithWhereWithoutCardTypeInput | Prisma.PaymentUpdateManyWithWhereWithoutCardTypeInput[]
+  deleteMany?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
+}
+
+export type PaymentUncheckedUpdateManyWithoutCardTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput> | Prisma.PaymentCreateWithoutCardTypeInput[] | Prisma.PaymentUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutCardTypeInput | Prisma.PaymentCreateOrConnectWithoutCardTypeInput[]
+  upsert?: Prisma.PaymentUpsertWithWhereUniqueWithoutCardTypeInput | Prisma.PaymentUpsertWithWhereUniqueWithoutCardTypeInput[]
+  createMany?: Prisma.PaymentCreateManyCardTypeInputEnvelope
+  set?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  disconnect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  delete?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  update?: Prisma.PaymentUpdateWithWhereUniqueWithoutCardTypeInput | Prisma.PaymentUpdateWithWhereUniqueWithoutCardTypeInput[]
+  updateMany?: Prisma.PaymentUpdateManyWithWhereWithoutCardTypeInput | Prisma.PaymentUpdateManyWithWhereWithoutCardTypeInput[]
+  deleteMany?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
 }
 
 export type PaymentCreateNestedManyWithoutImportedFileInput = {
@@ -526,6 +592,69 @@ export type PaymentUncheckedUpdateManyWithoutPaymentSourceNestedInput = {
   deleteMany?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
 }
 
+export type PaymentCreateWithoutCardTypeInput = {
+  id?: string
+  paymentDate: Date | string
+  amount: number
+  quantity?: number
+  yearMonth: string
+  createdAt?: Date | string
+  importedFile: Prisma.ImportedFileCreateNestedOneWithoutPaymentsInput
+  paymentSource: Prisma.PaymentSourceCreateNestedOneWithoutPaymentsInput
+}
+
+export type PaymentUncheckedCreateWithoutCardTypeInput = {
+  id?: string
+  importedFileId: string
+  paymentSourceId: string
+  paymentDate: Date | string
+  amount: number
+  quantity?: number
+  yearMonth: string
+  createdAt?: Date | string
+}
+
+export type PaymentCreateOrConnectWithoutCardTypeInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput>
+}
+
+export type PaymentCreateManyCardTypeInputEnvelope = {
+  data: Prisma.PaymentCreateManyCardTypeInput | Prisma.PaymentCreateManyCardTypeInput[]
+  skipDuplicates?: boolean
+}
+
+export type PaymentUpsertWithWhereUniqueWithoutCardTypeInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  update: Prisma.XOR<Prisma.PaymentUpdateWithoutCardTypeInput, Prisma.PaymentUncheckedUpdateWithoutCardTypeInput>
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutCardTypeInput, Prisma.PaymentUncheckedCreateWithoutCardTypeInput>
+}
+
+export type PaymentUpdateWithWhereUniqueWithoutCardTypeInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  data: Prisma.XOR<Prisma.PaymentUpdateWithoutCardTypeInput, Prisma.PaymentUncheckedUpdateWithoutCardTypeInput>
+}
+
+export type PaymentUpdateManyWithWhereWithoutCardTypeInput = {
+  where: Prisma.PaymentScalarWhereInput
+  data: Prisma.XOR<Prisma.PaymentUpdateManyMutationInput, Prisma.PaymentUncheckedUpdateManyWithoutCardTypeInput>
+}
+
+export type PaymentScalarWhereInput = {
+  AND?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
+  OR?: Prisma.PaymentScalarWhereInput[]
+  NOT?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
+  id?: Prisma.StringFilter<"Payment"> | string
+  importedFileId?: Prisma.StringFilter<"Payment"> | string
+  paymentSourceId?: Prisma.StringFilter<"Payment"> | string
+  cardTypeId?: Prisma.StringFilter<"Payment"> | string
+  paymentDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  amount?: Prisma.IntFilter<"Payment"> | number
+  quantity?: Prisma.IntFilter<"Payment"> | number
+  yearMonth?: Prisma.StringFilter<"Payment"> | string
+  createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
+}
+
 export type PaymentCreateWithoutImportedFileInput = {
   id?: string
   paymentDate: Date | string
@@ -534,11 +663,13 @@ export type PaymentCreateWithoutImportedFileInput = {
   yearMonth: string
   createdAt?: Date | string
   paymentSource: Prisma.PaymentSourceCreateNestedOneWithoutPaymentsInput
+  cardType: Prisma.CardTypeCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateWithoutImportedFileInput = {
   id?: string
   paymentSourceId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -572,20 +703,6 @@ export type PaymentUpdateManyWithWhereWithoutImportedFileInput = {
   data: Prisma.XOR<Prisma.PaymentUpdateManyMutationInput, Prisma.PaymentUncheckedUpdateManyWithoutImportedFileInput>
 }
 
-export type PaymentScalarWhereInput = {
-  AND?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
-  OR?: Prisma.PaymentScalarWhereInput[]
-  NOT?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
-  id?: Prisma.StringFilter<"Payment"> | string
-  importedFileId?: Prisma.StringFilter<"Payment"> | string
-  paymentSourceId?: Prisma.StringFilter<"Payment"> | string
-  paymentDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
-  amount?: Prisma.IntFilter<"Payment"> | number
-  quantity?: Prisma.IntFilter<"Payment"> | number
-  yearMonth?: Prisma.StringFilter<"Payment"> | string
-  createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
-}
-
 export type PaymentCreateWithoutPaymentSourceInput = {
   id?: string
   paymentDate: Date | string
@@ -594,11 +711,13 @@ export type PaymentCreateWithoutPaymentSourceInput = {
   yearMonth: string
   createdAt?: Date | string
   importedFile: Prisma.ImportedFileCreateNestedOneWithoutPaymentsInput
+  cardType: Prisma.CardTypeCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateWithoutPaymentSourceInput = {
   id?: string
   importedFileId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -632,9 +751,54 @@ export type PaymentUpdateManyWithWhereWithoutPaymentSourceInput = {
   data: Prisma.XOR<Prisma.PaymentUpdateManyMutationInput, Prisma.PaymentUncheckedUpdateManyWithoutPaymentSourceInput>
 }
 
+export type PaymentCreateManyCardTypeInput = {
+  id?: string
+  importedFileId: string
+  paymentSourceId: string
+  paymentDate: Date | string
+  amount: number
+  quantity?: number
+  yearMonth: string
+  createdAt?: Date | string
+}
+
+export type PaymentUpdateWithoutCardTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedFile?: Prisma.ImportedFileUpdateOneRequiredWithoutPaymentsNestedInput
+  paymentSource?: Prisma.PaymentSourceUpdateOneRequiredWithoutPaymentsNestedInput
+}
+
+export type PaymentUncheckedUpdateWithoutCardTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PaymentUncheckedUpdateManyWithoutCardTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type PaymentCreateManyImportedFileInput = {
   id?: string
   paymentSourceId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -650,11 +814,13 @@ export type PaymentUpdateWithoutImportedFileInput = {
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paymentSource?: Prisma.PaymentSourceUpdateOneRequiredWithoutPaymentsNestedInput
+  cardType?: Prisma.CardTypeUpdateOneRequiredWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutImportedFileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -665,6 +831,7 @@ export type PaymentUncheckedUpdateWithoutImportedFileInput = {
 export type PaymentUncheckedUpdateManyWithoutImportedFileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   paymentSourceId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -675,6 +842,7 @@ export type PaymentUncheckedUpdateManyWithoutImportedFileInput = {
 export type PaymentCreateManyPaymentSourceInput = {
   id?: string
   importedFileId: string
+  cardTypeId: string
   paymentDate: Date | string
   amount: number
   quantity?: number
@@ -690,11 +858,13 @@ export type PaymentUpdateWithoutPaymentSourceInput = {
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedFile?: Prisma.ImportedFileUpdateOneRequiredWithoutPaymentsNestedInput
+  cardType?: Prisma.CardTypeUpdateOneRequiredWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutPaymentSourceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -705,6 +875,7 @@ export type PaymentUncheckedUpdateWithoutPaymentSourceInput = {
 export type PaymentUncheckedUpdateManyWithoutPaymentSourceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   importedFileId?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
@@ -718,6 +889,7 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   importedFileId?: boolean
   paymentSourceId?: boolean
+  cardTypeId?: boolean
   paymentDate?: boolean
   amount?: boolean
   quantity?: boolean
@@ -725,12 +897,14 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   importedFileId?: boolean
   paymentSourceId?: boolean
+  cardTypeId?: boolean
   paymentDate?: boolean
   amount?: boolean
   quantity?: boolean
@@ -738,12 +912,14 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   importedFileId?: boolean
   paymentSourceId?: boolean
+  cardTypeId?: boolean
   paymentDate?: boolean
   amount?: boolean
   quantity?: boolean
@@ -751,12 +927,14 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectScalar = {
   id?: boolean
   importedFileId?: boolean
   paymentSourceId?: boolean
+  cardTypeId?: boolean
   paymentDate?: boolean
   amount?: boolean
   quantity?: boolean
@@ -764,18 +942,21 @@ export type PaymentSelectScalar = {
   createdAt?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "importedFileId" | "paymentSourceId" | "paymentDate" | "amount" | "quantity" | "yearMonth" | "createdAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "importedFileId" | "paymentSourceId" | "cardTypeId" | "paymentDate" | "amount" | "quantity" | "yearMonth" | "createdAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }
 export type PaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }
 export type PaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   importedFile?: boolean | Prisma.ImportedFileDefaultArgs<ExtArgs>
   paymentSource?: boolean | Prisma.PaymentSourceDefaultArgs<ExtArgs>
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }
 
 export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -783,11 +964,13 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     importedFile: Prisma.$ImportedFilePayload<ExtArgs>
     paymentSource: Prisma.$PaymentSourcePayload<ExtArgs>
+    cardType: Prisma.$CardTypePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     importedFileId: string
     paymentSourceId: string
+    cardTypeId: string
     paymentDate: Date
     amount: number
     quantity: number
@@ -1189,6 +1372,7 @@ export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   importedFile<T extends Prisma.ImportedFileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportedFileDefaultArgs<ExtArgs>>): Prisma.Prisma__ImportedFileClient<runtime.Types.Result.GetResult<Prisma.$ImportedFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   paymentSource<T extends Prisma.PaymentSourceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PaymentSourceDefaultArgs<ExtArgs>>): Prisma.Prisma__PaymentSourceClient<runtime.Types.Result.GetResult<Prisma.$PaymentSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  cardType<T extends Prisma.CardTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CardTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__CardTypeClient<runtime.Types.Result.GetResult<Prisma.$CardTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1221,6 +1405,7 @@ export interface PaymentFieldRefs {
   readonly id: Prisma.FieldRef<"Payment", 'String'>
   readonly importedFileId: Prisma.FieldRef<"Payment", 'String'>
   readonly paymentSourceId: Prisma.FieldRef<"Payment", 'String'>
+  readonly cardTypeId: Prisma.FieldRef<"Payment", 'String'>
   readonly paymentDate: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly amount: Prisma.FieldRef<"Payment", 'Int'>
   readonly quantity: Prisma.FieldRef<"Payment", 'Int'>

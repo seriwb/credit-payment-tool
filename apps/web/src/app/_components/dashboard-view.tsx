@@ -1,18 +1,34 @@
 "use client";
 
+import { useCallback, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUp, Upload } from "lucide-react";
+import { CardTypeFilter } from "@/components/shared/card-type-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { DashboardData } from "../_lib/actions";
+import type { CardTypeOption, DashboardData } from "@/types/application";
+import { getDashboardData } from "../_lib/actions";
 
 type Props = {
   data: DashboardData;
+  cardTypes: CardTypeOption[];
 };
 
-export function DashboardView({ data }: Props) {
+export function DashboardView({ data: initialData, cardTypes }: Props) {
+  const [data, setData] = useState(initialData);
+  const [selectedCardTypeId, setSelectedCardTypeId] = useState<string>("all");
+  const [isPending, startTransition] = useTransition();
+
+  const handleCardTypeChange = useCallback((cardTypeId: string) => {
+    setSelectedCardTypeId(cardTypeId);
+    startTransition(async () => {
+      const newData = await getDashboardData(cardTypeId === "all" ? undefined : cardTypeId);
+      setData(newData);
+    });
+  }, []);
+
   const formatYearMonth = (yearMonth: string) => {
     return `${yearMonth.slice(0, 4)}年${yearMonth.slice(4, 6)}月`;
   };
@@ -41,7 +57,16 @@ export function DashboardView({ data }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* 今月の概要 */}
+      <div className="flex items-center gap-4">
+        <CardTypeFilter
+          cardTypes={cardTypes}
+          selectedCardTypeId={selectedCardTypeId}
+          onCardTypeChange={handleCardTypeChange}
+          disabled={isPending}
+        />
+        {isPending && <span className="text-sm text-muted-foreground">読み込み中...</span>}
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
@@ -123,7 +148,6 @@ export function DashboardView({ data }: Props) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* 今月の支払い元TOP5 */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -155,7 +179,6 @@ export function DashboardView({ data }: Props) {
           </CardContent>
         </Card>
 
-        {/* カテゴリ別内訳 */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -185,7 +208,6 @@ export function DashboardView({ data }: Props) {
         </Card>
       </div>
 
-      {/* 最近のインポート */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">

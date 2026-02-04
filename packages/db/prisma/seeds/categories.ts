@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../generated/prisma/client';
 
 // 初期カテゴリデータ
 export const CATEGORIES: Prisma.CategoryCreateInput[] = [

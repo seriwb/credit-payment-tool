@@ -5,20 +5,24 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { CardTypeOption } from "@/types/application";
 import { deleteImportedFile, getImportHistory, importCsvFile, importFromDirectory } from "../_lib/actions";
 import type { ImportHistory, ImportResult } from "../_lib/types";
+import { CardTypeSelector } from "./card-type-selector";
 import { DirectoryInput } from "./directory-input";
 import { FileUploadZone } from "./file-upload-zone";
 import { ImportHistoryTable } from "./import-history-table";
 
 type Props = {
   initialHistory: ImportHistory[];
+  cardTypes: CardTypeOption[];
 };
 
-export function ImportView({ initialHistory }: Props) {
+export function ImportView({ initialHistory, cardTypes }: Props) {
   const [history, setHistory] = useState<ImportHistory[]>(initialHistory);
   const [results, setResults] = useState<ImportResult[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [selectedCardTypeCode, setSelectedCardTypeCode] = useState<string>(cardTypes[0]?.code ?? "");
 
   const refreshHistory = useCallback(async () => {
     const newHistory = await getImportHistory();
@@ -30,6 +34,7 @@ export function ImportView({ initialHistory }: Props) {
       startTransition(async () => {
         const formData = new FormData();
         files.forEach((file) => formData.append("files", file));
+        formData.append("cardTypeCode", selectedCardTypeCode);
 
         const importResults = await importCsvFile(formData);
         setResults(importResults);
@@ -46,13 +51,13 @@ export function ImportView({ initialHistory }: Props) {
         }
       });
     },
-    [refreshHistory]
+    [refreshHistory, selectedCardTypeCode]
   );
 
   const handleDirectoryImport = useCallback(
     (path: string) => {
       startTransition(async () => {
-        const importResults = await importFromDirectory(path);
+        const importResults = await importFromDirectory(path, selectedCardTypeCode);
         setResults(importResults);
 
         const successCount = importResults.filter((r) => r.success).length;
@@ -67,7 +72,7 @@ export function ImportView({ initialHistory }: Props) {
         }
       });
     },
-    [refreshHistory]
+    [refreshHistory, selectedCardTypeCode]
   );
 
   const handleDelete = useCallback(
@@ -85,6 +90,13 @@ export function ImportView({ initialHistory }: Props) {
 
   return (
     <div className="space-y-6">
+      <CardTypeSelector
+        cardTypes={cardTypes}
+        selectedCode={selectedCardTypeCode}
+        onCodeChange={setSelectedCardTypeCode}
+        disabled={isPending}
+      />
+
       <Tabs defaultValue="upload">
         <TabsList>
           <TabsTrigger value="upload">ファイルアップロード</TabsTrigger>

@@ -1,12 +1,14 @@
+import { getCardTypes } from "../_lib/actions";
 import { AnalyticsView } from "./_components/analytics-view";
 import { getCategoryAnalytics, getMonthlyAnalytics, getSourceAnalytics, getYearMonthRange } from "./_lib/actions";
 
 export default async function AnalyticsPage() {
-  const [monthlyData, sourceData, categoryData, yearMonthRange] = await Promise.all([
+  const [monthlyData, sourceData, categoryData, yearMonthRange, cardTypes] = await Promise.all([
     getMonthlyAnalytics(),
     getSourceAnalytics(),
     getCategoryAnalytics(),
     getYearMonthRange(),
+    getCardTypes(),
   ]);
 
   return (
@@ -20,6 +22,7 @@ export default async function AnalyticsPage() {
         initialSourceData={sourceData}
         initialCategoryData={categoryData}
         yearMonths={yearMonthRange.all}
+        cardTypes={cardTypes}
       />
     </div>
   );

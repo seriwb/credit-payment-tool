@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { CardTypeFilter } from "@/components/shared/card-type-filter";
+import type { CardTypeOption } from "@/types/application";
 import {
   type CategoryOption,
   type PaymentSourceDetail,
@@ -14,9 +16,10 @@ import { SourcesTable } from "./sources-table";
 type Props = {
   initialSources: PaymentSourceDetail[];
   categories: CategoryOption[];
+  cardTypes: CardTypeOption[];
 };
 
-export function SourcesView({ initialSources, categories }: Props) {
+export function SourcesView({ initialSources, categories, cardTypes }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -29,6 +32,7 @@ export function SourcesView({ initialSources, categories }: Props) {
   const [sources, setSources] = useState(initialSources);
   const [nameFilter, setNameFilter] = useState<string>(initialName);
   const [categoryFilter, setCategoryFilter] = useState<string | null | undefined>(initialCategoryId);
+  const [selectedCardTypeId, setSelectedCardTypeId] = useState<string>("all");
   const [isPending, startTransition] = useTransition();
   const hasUrlParams = useRef(initialName !== "" || initialCategoryId !== undefined);
 
@@ -62,10 +66,11 @@ export function SourcesView({ initialSources, categories }: Props) {
   }, []);
 
   // データ取得関数
-  const fetchSources = useCallback((name: string, categoryId: string | null | undefined) => {
+  const fetchSources = useCallback((name: string, categoryId: string | null | undefined, cardTypeId?: string) => {
     const filter: SourceFilterParams = {};
     if (name) filter.name = name;
     if (categoryId !== undefined) filter.categoryId = categoryId;
+    if (cardTypeId && cardTypeId !== "all") filter.cardTypeId = cardTypeId;
 
     startTransition(async () => {
       const newSources = await getPaymentSources(filter);
@@ -80,34 +85,43 @@ export function SourcesView({ initialSources, categories }: Props) {
       if (name === nameFilter) return;
 
       setNameFilter(name);
-      fetchSources(name, categoryFilter);
+      fetchSources(name, categoryFilter, selectedCardTypeId);
       updateUrl(name, categoryFilter);
     },
-    [nameFilter, categoryFilter, fetchSources, updateUrl]
+    [nameFilter, categoryFilter, selectedCardTypeId, fetchSources, updateUrl]
   );
 
   // カテゴリフィルター変更ハンドラー（即座に反映）
   const handleCategoryChange = useCallback(
     (categoryId: string | null | undefined) => {
       setCategoryFilter(categoryId);
-      fetchSources(nameFilter, categoryId);
+      fetchSources(nameFilter, categoryId, selectedCardTypeId);
       updateUrl(nameFilter, categoryId);
     },
-    [nameFilter, fetchSources, updateUrl]
+    [nameFilter, selectedCardTypeId, fetchSources, updateUrl]
+  );
+
+  // カード種別フィルター変更ハンドラー
+  const handleCardTypeChange = useCallback(
+    (cardTypeId: string) => {
+      setSelectedCardTypeId(cardTypeId);
+      fetchSources(nameFilter, categoryFilter, cardTypeId);
+    },
+    [nameFilter, categoryFilter, fetchSources]
   );
 
   // クリアハンドラー
   const handleClear = useCallback(() => {
     setNameFilter("");
     setCategoryFilter(undefined);
-    fetchSources("", undefined);
+    fetchSources("", undefined, selectedCardTypeId);
     updateUrl("", undefined);
-  }, [fetchSources, updateUrl]);
+  }, [selectedCardTypeId, fetchSources, updateUrl]);
 
   // カテゴリ更新後のリフレッシュ（現在のフィルターを維持）
   const handleRefresh = useCallback(() => {
-    fetchSources(nameFilter, categoryFilter);
-  }, [nameFilter, categoryFilter, fetchSources]);
+    fetchSources(nameFilter, categoryFilter, selectedCardTypeId);
+  }, [nameFilter, categoryFilter, selectedCardTypeId, fetchSources]);
 
   // 現在のフィルター状態
   const currentFilter: SourceFilterParams = {
@@ -117,6 +131,14 @@ export function SourcesView({ initialSources, categories }: Props) {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <CardTypeFilter
+          cardTypes={cardTypes}
+          selectedCardTypeId={selectedCardTypeId}
+          onCardTypeChange={handleCardTypeChange}
+          disabled={isPending}
+        />
+      </div>
       <SourcesFilter
         categories={categories}
         initialName={initialName}

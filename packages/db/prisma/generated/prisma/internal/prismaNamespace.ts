@@ -16,10 +16,10 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "../models.js"
-import { type PrismaClient } from "./class.js"
+import type * as Prisma from "../models.ts"
+import { type PrismaClient } from "./class.ts"
 
-export type * from '../models.js'
+export type * from '../models.ts'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -384,6 +384,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  CardType: 'CardType',
   ImportedFile: 'ImportedFile',
   PaymentSource: 'PaymentSource',
   Category: 'Category',
@@ -403,10 +404,84 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "importedFile" | "paymentSource" | "category" | "payment"
+    modelProps: "cardType" | "importedFile" | "paymentSource" | "category" | "payment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    CardType: {
+      payload: Prisma.$CardTypePayload<ExtArgs>
+      fields: Prisma.CardTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CardTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CardTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        findFirst: {
+          args: Prisma.CardTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CardTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        findMany: {
+          args: Prisma.CardTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>[]
+        }
+        create: {
+          args: Prisma.CardTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        createMany: {
+          args: Prisma.CardTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CardTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>[]
+        }
+        delete: {
+          args: Prisma.CardTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        update: {
+          args: Prisma.CardTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.CardTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CardTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CardTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.CardTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardTypePayload>
+        }
+        aggregate: {
+          args: Prisma.CardTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCardType>
+        }
+        groupBy: {
+          args: Prisma.CardTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CardTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CardTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CardTypeCountAggregateOutputType> | number
+        }
+      }
+    }
     ImportedFile: {
       payload: Prisma.$ImportedFilePayload<ExtArgs>
       fields: Prisma.ImportedFileFieldRefs
@@ -742,9 +817,22 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const CardTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CardTypeScalarFieldEnum = (typeof CardTypeScalarFieldEnum)[keyof typeof CardTypeScalarFieldEnum]
+
+
 export const ImportedFileScalarFieldEnum = {
   id: 'id',
   fileName: 'fileName',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth',
   importedAt: 'importedAt'
 } as const
@@ -778,6 +866,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   importedFileId: 'importedFileId',
   paymentSourceId: 'paymentSourceId',
+  cardTypeId: 'cardTypeId',
   paymentDate: 'paymentDate',
   amount: 'amount',
   quantity: 'quantity',
@@ -804,9 +893,19 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const CardTypeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name'
+} as const
+
+export type CardTypeOrderByRelevanceFieldEnum = (typeof CardTypeOrderByRelevanceFieldEnum)[keyof typeof CardTypeOrderByRelevanceFieldEnum]
+
+
 export const ImportedFileOrderByRelevanceFieldEnum = {
   id: 'id',
   fileName: 'fileName',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth'
 } as const
 
@@ -842,6 +941,7 @@ export const PaymentOrderByRelevanceFieldEnum = {
   id: 'id',
   importedFileId: 'importedFileId',
   paymentSourceId: 'paymentSourceId',
+  cardTypeId: 'cardTypeId',
   yearMonth: 'yearMonth'
 } as const
 
@@ -869,20 +969,6 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -893,6 +979,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -1004,6 +1104,7 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
+  cardType?: Prisma.CardTypeOmit
   importedFile?: Prisma.ImportedFileOmit
   paymentSource?: Prisma.PaymentSourceOmit
   category?: Prisma.CategoryOmit

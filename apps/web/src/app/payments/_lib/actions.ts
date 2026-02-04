@@ -22,11 +22,12 @@ export type PaymentsResult = {
 /**
  * 利用可能な年月リストを取得
  */
-export async function getAvailableYearMonths(): Promise<string[]> {
+export async function getAvailableYearMonths(cardTypeId?: string): Promise<string[]> {
   const yearMonths = await prisma.payment.findMany({
     select: { yearMonth: true },
     distinct: ["yearMonth"],
     orderBy: { yearMonth: "desc" },
+    ...(cardTypeId ? { where: { cardTypeId } } : {}),
   });
 
   return yearMonths.map((item) => item.yearMonth);
@@ -35,11 +36,13 @@ export async function getAvailableYearMonths(): Promise<string[]> {
 /**
  * 月別支払い一覧を取得
  */
-export async function getPaymentsByMonth(yearMonth: string): Promise<PaymentsResult> {
-  const yearMonths = await getAvailableYearMonths();
+export async function getPaymentsByMonth(yearMonth: string, cardTypeId?: string): Promise<PaymentsResult> {
+  const yearMonths = await getAvailableYearMonths(cardTypeId);
+
+  const where = cardTypeId ? { yearMonth, cardTypeId } : { yearMonth };
 
   const payments = await prisma.payment.findMany({
-    where: { yearMonth },
+    where,
     include: {
       paymentSource: {
         include: {
@@ -71,10 +74,12 @@ export async function getPaymentsByMonth(yearMonth: string): Promise<PaymentsRes
 /**
  * 支払い元別の集計を取得
  */
-export async function getPaymentSummaryBySource(yearMonth: string) {
+export async function getPaymentSummaryBySource(yearMonth: string, cardTypeId?: string) {
+  const where = cardTypeId ? { yearMonth, cardTypeId } : { yearMonth };
+
   const summary = await prisma.payment.groupBy({
     by: ["paymentSourceId"],
-    where: { yearMonth },
+    where,
     _sum: { amount: true },
     _count: { id: true },
     orderBy: { _sum: { amount: "desc" } },

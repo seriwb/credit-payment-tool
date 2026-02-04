@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "ゴールドポイントカード管理ツール",
-  description: "ヨドバシゴールドポイントカードの支払い履歴を管理・分析するツール",
+  title: "カード支払い管理ツール",
+  description: "クレジットカードの支払い履歴を管理・分析するツール",
 };
 
 type Props = {

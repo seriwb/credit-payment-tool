@@ -3,11 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderOpen } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { type DirectoryPathInput, directoryPathSchema } from "../_lib/schemas";
+
+const directoryPathSchema = z.object({
+  path: z.string().min(1, "ディレクトリパスを入力してください"),
+});
+
+type DirectoryPathInput = z.infer<typeof directoryPathSchema>;
 
 type Props = {
   onSubmit: (path: string) => void;

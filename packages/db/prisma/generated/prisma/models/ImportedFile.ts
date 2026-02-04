@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums.ts"
+import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
  * Model ImportedFile
@@ -27,6 +27,7 @@ export type AggregateImportedFile = {
 export type ImportedFileMinAggregateOutputType = {
   id: string | null
   fileName: string | null
+  cardTypeId: string | null
   yearMonth: string | null
   importedAt: Date | null
 }
@@ -34,6 +35,7 @@ export type ImportedFileMinAggregateOutputType = {
 export type ImportedFileMaxAggregateOutputType = {
   id: string | null
   fileName: string | null
+  cardTypeId: string | null
   yearMonth: string | null
   importedAt: Date | null
 }
@@ -41,6 +43,7 @@ export type ImportedFileMaxAggregateOutputType = {
 export type ImportedFileCountAggregateOutputType = {
   id: number
   fileName: number
+  cardTypeId: number
   yearMonth: number
   importedAt: number
   _all: number
@@ -50,6 +53,7 @@ export type ImportedFileCountAggregateOutputType = {
 export type ImportedFileMinAggregateInputType = {
   id?: true
   fileName?: true
+  cardTypeId?: true
   yearMonth?: true
   importedAt?: true
 }
@@ -57,6 +61,7 @@ export type ImportedFileMinAggregateInputType = {
 export type ImportedFileMaxAggregateInputType = {
   id?: true
   fileName?: true
+  cardTypeId?: true
   yearMonth?: true
   importedAt?: true
 }
@@ -64,6 +69,7 @@ export type ImportedFileMaxAggregateInputType = {
 export type ImportedFileCountAggregateInputType = {
   id?: true
   fileName?: true
+  cardTypeId?: true
   yearMonth?: true
   importedAt?: true
   _all?: true
@@ -144,6 +150,7 @@ export type ImportedFileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type ImportedFileGroupByOutputType = {
   id: string
   fileName: string
+  cardTypeId: string
   yearMonth: string
   importedAt: Date
   _count: ImportedFileCountAggregateOutputType | null
@@ -172,34 +179,42 @@ export type ImportedFileWhereInput = {
   NOT?: Prisma.ImportedFileWhereInput | Prisma.ImportedFileWhereInput[]
   id?: Prisma.StringFilter<"ImportedFile"> | string
   fileName?: Prisma.StringFilter<"ImportedFile"> | string
+  cardTypeId?: Prisma.StringFilter<"ImportedFile"> | string
   yearMonth?: Prisma.StringFilter<"ImportedFile"> | string
   importedAt?: Prisma.DateTimeFilter<"ImportedFile"> | Date | string
+  cardType?: Prisma.XOR<Prisma.CardTypeScalarRelationFilter, Prisma.CardTypeWhereInput>
   payments?: Prisma.PaymentListRelationFilter
 }
 
 export type ImportedFileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   yearMonth?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  cardType?: Prisma.CardTypeOrderByWithRelationInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   _relevance?: Prisma.ImportedFileOrderByRelevanceInput
 }
 
 export type ImportedFileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  fileName?: string
+  fileName_cardTypeId?: Prisma.ImportedFileFileNameCardTypeIdCompoundUniqueInput
   AND?: Prisma.ImportedFileWhereInput | Prisma.ImportedFileWhereInput[]
   OR?: Prisma.ImportedFileWhereInput[]
   NOT?: Prisma.ImportedFileWhereInput | Prisma.ImportedFileWhereInput[]
+  fileName?: Prisma.StringFilter<"ImportedFile"> | string
+  cardTypeId?: Prisma.StringFilter<"ImportedFile"> | string
   yearMonth?: Prisma.StringFilter<"ImportedFile"> | string
   importedAt?: Prisma.DateTimeFilter<"ImportedFile"> | Date | string
+  cardType?: Prisma.XOR<Prisma.CardTypeScalarRelationFilter, Prisma.CardTypeWhereInput>
   payments?: Prisma.PaymentListRelationFilter
-}, "id" | "fileName">
+}, "id" | "fileName_cardTypeId">
 
 export type ImportedFileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   yearMonth?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
   _count?: Prisma.ImportedFileCountOrderByAggregateInput
@@ -213,6 +228,7 @@ export type ImportedFileScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ImportedFileScalarWhereWithAggregatesInput | Prisma.ImportedFileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ImportedFile"> | string
   fileName?: Prisma.StringWithAggregatesFilter<"ImportedFile"> | string
+  cardTypeId?: Prisma.StringWithAggregatesFilter<"ImportedFile"> | string
   yearMonth?: Prisma.StringWithAggregatesFilter<"ImportedFile"> | string
   importedAt?: Prisma.DateTimeWithAggregatesFilter<"ImportedFile"> | Date | string
 }
@@ -222,12 +238,14 @@ export type ImportedFileCreateInput = {
   fileName: string
   yearMonth: string
   importedAt?: Date | string
+  cardType: Prisma.CardTypeCreateNestedOneWithoutImportedFilesInput
   payments?: Prisma.PaymentCreateNestedManyWithoutImportedFileInput
 }
 
 export type ImportedFileUncheckedCreateInput = {
   id?: string
   fileName: string
+  cardTypeId: string
   yearMonth: string
   importedAt?: Date | string
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutImportedFileInput
@@ -238,12 +256,14 @@ export type ImportedFileUpdateInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cardType?: Prisma.CardTypeUpdateOneRequiredWithoutImportedFilesNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutImportedFileNestedInput
 }
 
 export type ImportedFileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutImportedFileNestedInput
@@ -252,6 +272,7 @@ export type ImportedFileUncheckedUpdateInput = {
 export type ImportedFileCreateManyInput = {
   id?: string
   fileName: string
+  cardTypeId: string
   yearMonth: string
   importedAt?: Date | string
 }
@@ -266,8 +287,19 @@ export type ImportedFileUpdateManyMutationInput = {
 export type ImportedFileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ImportedFileListRelationFilter = {
+  every?: Prisma.ImportedFileWhereInput
+  some?: Prisma.ImportedFileWhereInput
+  none?: Prisma.ImportedFileWhereInput
+}
+
+export type ImportedFileOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ImportedFileOrderByRelevanceInput = {
@@ -276,9 +308,15 @@ export type ImportedFileOrderByRelevanceInput = {
   search: string
 }
 
+export type ImportedFileFileNameCardTypeIdCompoundUniqueInput = {
+  fileName: string
+  cardTypeId: string
+}
+
 export type ImportedFileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   yearMonth?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
 }
@@ -286,6 +324,7 @@ export type ImportedFileCountOrderByAggregateInput = {
 export type ImportedFileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   yearMonth?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
 }
@@ -293,6 +332,7 @@ export type ImportedFileMaxOrderByAggregateInput = {
 export type ImportedFileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  cardTypeId?: Prisma.SortOrder
   yearMonth?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
 }
@@ -302,12 +342,46 @@ export type ImportedFileScalarRelationFilter = {
   isNot?: Prisma.ImportedFileWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type ImportedFileCreateNestedManyWithoutCardTypeInput = {
+  create?: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput> | Prisma.ImportedFileCreateWithoutCardTypeInput[] | Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput | Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput[]
+  createMany?: Prisma.ImportedFileCreateManyCardTypeInputEnvelope
+  connect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type ImportedFileUncheckedCreateNestedManyWithoutCardTypeInput = {
+  create?: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput> | Prisma.ImportedFileCreateWithoutCardTypeInput[] | Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput | Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput[]
+  createMany?: Prisma.ImportedFileCreateManyCardTypeInputEnvelope
+  connect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+}
+
+export type ImportedFileUpdateManyWithoutCardTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput> | Prisma.ImportedFileCreateWithoutCardTypeInput[] | Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput | Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput[]
+  upsert?: Prisma.ImportedFileUpsertWithWhereUniqueWithoutCardTypeInput | Prisma.ImportedFileUpsertWithWhereUniqueWithoutCardTypeInput[]
+  createMany?: Prisma.ImportedFileCreateManyCardTypeInputEnvelope
+  set?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  disconnect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  delete?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  connect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  update?: Prisma.ImportedFileUpdateWithWhereUniqueWithoutCardTypeInput | Prisma.ImportedFileUpdateWithWhereUniqueWithoutCardTypeInput[]
+  updateMany?: Prisma.ImportedFileUpdateManyWithWhereWithoutCardTypeInput | Prisma.ImportedFileUpdateManyWithWhereWithoutCardTypeInput[]
+  deleteMany?: Prisma.ImportedFileScalarWhereInput | Prisma.ImportedFileScalarWhereInput[]
+}
+
+export type ImportedFileUncheckedUpdateManyWithoutCardTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput> | Prisma.ImportedFileCreateWithoutCardTypeInput[] | Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput[]
+  connectOrCreate?: Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput | Prisma.ImportedFileCreateOrConnectWithoutCardTypeInput[]
+  upsert?: Prisma.ImportedFileUpsertWithWhereUniqueWithoutCardTypeInput | Prisma.ImportedFileUpsertWithWhereUniqueWithoutCardTypeInput[]
+  createMany?: Prisma.ImportedFileCreateManyCardTypeInputEnvelope
+  set?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  disconnect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  delete?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  connect?: Prisma.ImportedFileWhereUniqueInput | Prisma.ImportedFileWhereUniqueInput[]
+  update?: Prisma.ImportedFileUpdateWithWhereUniqueWithoutCardTypeInput | Prisma.ImportedFileUpdateWithWhereUniqueWithoutCardTypeInput[]
+  updateMany?: Prisma.ImportedFileUpdateManyWithWhereWithoutCardTypeInput | Prisma.ImportedFileUpdateManyWithWhereWithoutCardTypeInput[]
+  deleteMany?: Prisma.ImportedFileScalarWhereInput | Prisma.ImportedFileScalarWhereInput[]
 }
 
 export type ImportedFileCreateNestedOneWithoutPaymentsInput = {
@@ -324,16 +398,71 @@ export type ImportedFileUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ImportedFileUpdateToOneWithWhereWithoutPaymentsInput, Prisma.ImportedFileUpdateWithoutPaymentsInput>, Prisma.ImportedFileUncheckedUpdateWithoutPaymentsInput>
 }
 
+export type ImportedFileCreateWithoutCardTypeInput = {
+  id?: string
+  fileName: string
+  yearMonth: string
+  importedAt?: Date | string
+  payments?: Prisma.PaymentCreateNestedManyWithoutImportedFileInput
+}
+
+export type ImportedFileUncheckedCreateWithoutCardTypeInput = {
+  id?: string
+  fileName: string
+  yearMonth: string
+  importedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutImportedFileInput
+}
+
+export type ImportedFileCreateOrConnectWithoutCardTypeInput = {
+  where: Prisma.ImportedFileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput>
+}
+
+export type ImportedFileCreateManyCardTypeInputEnvelope = {
+  data: Prisma.ImportedFileCreateManyCardTypeInput | Prisma.ImportedFileCreateManyCardTypeInput[]
+  skipDuplicates?: boolean
+}
+
+export type ImportedFileUpsertWithWhereUniqueWithoutCardTypeInput = {
+  where: Prisma.ImportedFileWhereUniqueInput
+  update: Prisma.XOR<Prisma.ImportedFileUpdateWithoutCardTypeInput, Prisma.ImportedFileUncheckedUpdateWithoutCardTypeInput>
+  create: Prisma.XOR<Prisma.ImportedFileCreateWithoutCardTypeInput, Prisma.ImportedFileUncheckedCreateWithoutCardTypeInput>
+}
+
+export type ImportedFileUpdateWithWhereUniqueWithoutCardTypeInput = {
+  where: Prisma.ImportedFileWhereUniqueInput
+  data: Prisma.XOR<Prisma.ImportedFileUpdateWithoutCardTypeInput, Prisma.ImportedFileUncheckedUpdateWithoutCardTypeInput>
+}
+
+export type ImportedFileUpdateManyWithWhereWithoutCardTypeInput = {
+  where: Prisma.ImportedFileScalarWhereInput
+  data: Prisma.XOR<Prisma.ImportedFileUpdateManyMutationInput, Prisma.ImportedFileUncheckedUpdateManyWithoutCardTypeInput>
+}
+
+export type ImportedFileScalarWhereInput = {
+  AND?: Prisma.ImportedFileScalarWhereInput | Prisma.ImportedFileScalarWhereInput[]
+  OR?: Prisma.ImportedFileScalarWhereInput[]
+  NOT?: Prisma.ImportedFileScalarWhereInput | Prisma.ImportedFileScalarWhereInput[]
+  id?: Prisma.StringFilter<"ImportedFile"> | string
+  fileName?: Prisma.StringFilter<"ImportedFile"> | string
+  cardTypeId?: Prisma.StringFilter<"ImportedFile"> | string
+  yearMonth?: Prisma.StringFilter<"ImportedFile"> | string
+  importedAt?: Prisma.DateTimeFilter<"ImportedFile"> | Date | string
+}
+
 export type ImportedFileCreateWithoutPaymentsInput = {
   id?: string
   fileName: string
   yearMonth: string
   importedAt?: Date | string
+  cardType: Prisma.CardTypeCreateNestedOneWithoutImportedFilesInput
 }
 
 export type ImportedFileUncheckedCreateWithoutPaymentsInput = {
   id?: string
   fileName: string
+  cardTypeId: string
   yearMonth: string
   importedAt?: Date | string
 }
@@ -359,9 +488,41 @@ export type ImportedFileUpdateWithoutPaymentsInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cardType?: Prisma.CardTypeUpdateOneRequiredWithoutImportedFilesNestedInput
 }
 
 export type ImportedFileUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  cardTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ImportedFileCreateManyCardTypeInput = {
+  id?: string
+  fileName: string
+  yearMonth: string
+  importedAt?: Date | string
+}
+
+export type ImportedFileUpdateWithoutCardTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUpdateManyWithoutImportedFileNestedInput
+}
+
+export type ImportedFileUncheckedUpdateWithoutCardTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutImportedFileNestedInput
+}
+
+export type ImportedFileUncheckedUpdateManyWithoutCardTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   yearMonth?: Prisma.StringFieldUpdateOperationsInput | string
@@ -402,8 +563,10 @@ export type ImportedFileCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime
 export type ImportedFileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   fileName?: boolean
+  cardTypeId?: boolean
   yearMonth?: boolean
   importedAt?: boolean
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.ImportedFile$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.ImportedFileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importedFile"]>
@@ -411,40 +574,52 @@ export type ImportedFileSelect<ExtArgs extends runtime.Types.Extensions.Internal
 export type ImportedFileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   fileName?: boolean
+  cardTypeId?: boolean
   yearMonth?: boolean
   importedAt?: boolean
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importedFile"]>
 
 export type ImportedFileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   fileName?: boolean
+  cardTypeId?: boolean
   yearMonth?: boolean
   importedAt?: boolean
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importedFile"]>
 
 export type ImportedFileSelectScalar = {
   id?: boolean
   fileName?: boolean
+  cardTypeId?: boolean
   yearMonth?: boolean
   importedAt?: boolean
 }
 
-export type ImportedFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "yearMonth" | "importedAt", ExtArgs["result"]["importedFile"]>
+export type ImportedFileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "cardTypeId" | "yearMonth" | "importedAt", ExtArgs["result"]["importedFile"]>
 export type ImportedFileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.ImportedFile$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.ImportedFileCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ImportedFileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ImportedFileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ImportedFileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
+}
+export type ImportedFileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cardType?: boolean | Prisma.CardTypeDefaultArgs<ExtArgs>
+}
 
 export type $ImportedFilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ImportedFile"
   objects: {
+    cardType: Prisma.$CardTypePayload<ExtArgs>
     payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     fileName: string
+    cardTypeId: string
     yearMonth: string
     importedAt: Date
   }, ExtArgs["result"]["importedFile"]>
@@ -841,6 +1016,7 @@ readonly fields: ImportedFileFieldRefs;
  */
 export interface Prisma__ImportedFileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  cardType<T extends Prisma.CardTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CardTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__CardTypeClient<runtime.Types.Result.GetResult<Prisma.$CardTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   payments<T extends Prisma.ImportedFile$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportedFile$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -873,6 +1049,7 @@ export interface Prisma__ImportedFileClient<T, Null = never, ExtArgs extends run
 export interface ImportedFileFieldRefs {
   readonly id: Prisma.FieldRef<"ImportedFile", 'String'>
   readonly fileName: Prisma.FieldRef<"ImportedFile", 'String'>
+  readonly cardTypeId: Prisma.FieldRef<"ImportedFile", 'String'>
   readonly yearMonth: Prisma.FieldRef<"ImportedFile", 'String'>
   readonly importedAt: Prisma.FieldRef<"ImportedFile", 'DateTime'>
 }
@@ -1124,6 +1301,10 @@ export type ImportedFileCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.ImportedFileCreateManyInput | Prisma.ImportedFileCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportedFileIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1194,6 +1375,10 @@ export type ImportedFileUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many ImportedFiles to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportedFileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

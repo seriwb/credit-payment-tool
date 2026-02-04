@@ -1,3 +1,4 @@
+import { getCardTypes } from "@/app/_lib/actions";
 import { getSourceAnalytics, getYearMonthRange } from "../_lib/actions";
 import { SourcesDetailView } from "./_components/sources-detail-view";
 import { sourcesDetailParamsSchema } from "./_lib/schemas";
@@ -10,14 +11,13 @@ export default async function SourcesDetailPage({ searchParams }: Props) {
   const params = await searchParams;
   const parsed = sourcesDetailParamsSchema.safeParse(params);
 
-  // バリデーション結果から期間を取得
   const startMonth = parsed.success ? parsed.data.start : undefined;
   const endMonth = parsed.success ? parsed.data.end : undefined;
 
-  // データ取得（全件）
-  const [sourceData, yearMonthRange] = await Promise.all([
+  const [sourceData, yearMonthRange, cardTypes] = await Promise.all([
     getSourceAnalytics(startMonth, endMonth, 10000),
     getYearMonthRange(),
+    getCardTypes(),
   ]);
 
   return (
@@ -31,6 +31,7 @@ export default async function SourcesDetailPage({ searchParams }: Props) {
         yearMonths={yearMonthRange.all}
         initialStartMonth={startMonth}
         initialEndMonth={endMonth}
+        cardTypes={cardTypes}
       />
     </div>
   );

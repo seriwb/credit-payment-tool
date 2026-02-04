@@ -27,13 +27,21 @@ export type CategoryData = {
 /**
  * 月別の支払い集計を取得
  */
-export async function getMonthlyAnalytics(startYearMonth?: string, endYearMonth?: string): Promise<MonthlyData[]> {
-  const where: { yearMonth?: { gte?: string; lte?: string } } = {};
+export async function getMonthlyAnalytics(
+  startYearMonth?: string,
+  endYearMonth?: string,
+  cardTypeId?: string
+): Promise<MonthlyData[]> {
+  const where: { yearMonth?: { gte?: string; lte?: string }; cardTypeId?: string } = {};
 
   if (startYearMonth || endYearMonth) {
     where.yearMonth = {};
     if (startYearMonth) where.yearMonth.gte = startYearMonth;
     if (endYearMonth) where.yearMonth.lte = endYearMonth;
+  }
+
+  if (cardTypeId) {
+    where.cardTypeId = cardTypeId;
   }
 
   const data = await prisma.payment.groupBy({
@@ -57,14 +65,19 @@ export async function getMonthlyAnalytics(startYearMonth?: string, endYearMonth?
 export async function getSourceAnalytics(
   startYearMonth?: string,
   endYearMonth?: string,
-  limit = 10
+  limit = 10,
+  cardTypeId?: string
 ): Promise<SourceData[]> {
-  const where: { yearMonth?: { gte?: string; lte?: string } } = {};
+  const where: { yearMonth?: { gte?: string; lte?: string }; cardTypeId?: string } = {};
 
   if (startYearMonth || endYearMonth) {
     where.yearMonth = {};
     if (startYearMonth) where.yearMonth.gte = startYearMonth;
     if (endYearMonth) where.yearMonth.lte = endYearMonth;
+  }
+
+  if (cardTypeId) {
+    where.cardTypeId = cardTypeId;
   }
 
   const data = await prisma.payment.groupBy({
@@ -96,13 +109,21 @@ export async function getSourceAnalytics(
 /**
  * カテゴリ別の集計を取得
  */
-export async function getCategoryAnalytics(startYearMonth?: string, endYearMonth?: string): Promise<CategoryData[]> {
-  const where: { yearMonth?: { gte?: string; lte?: string } } = {};
+export async function getCategoryAnalytics(
+  startYearMonth?: string,
+  endYearMonth?: string,
+  cardTypeId?: string
+): Promise<CategoryData[]> {
+  const where: { yearMonth?: { gte?: string; lte?: string }; cardTypeId?: string } = {};
 
   if (startYearMonth || endYearMonth) {
     where.yearMonth = {};
     if (startYearMonth) where.yearMonth.gte = startYearMonth;
     if (endYearMonth) where.yearMonth.lte = endYearMonth;
+  }
+
+  if (cardTypeId) {
+    where.cardTypeId = cardTypeId;
   }
 
   // 支払いデータを取得
@@ -146,7 +167,7 @@ export async function getCategoryAnalytics(startYearMonth?: string, endYearMonth
 /**
  * 利用可能な年月の範囲を取得
  */
-export async function getYearMonthRange(): Promise<{
+export async function getYearMonthRange(cardTypeId?: string): Promise<{
   min: string | null;
   max: string | null;
   all: string[];
@@ -155,6 +176,7 @@ export async function getYearMonthRange(): Promise<{
     select: { yearMonth: true },
     distinct: ["yearMonth"],
     orderBy: { yearMonth: "asc" },
+    ...(cardTypeId ? { where: { cardTypeId } } : {}),
   });
 
   if (yearMonths.length === 0) {

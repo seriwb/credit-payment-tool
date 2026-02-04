@@ -61,6 +61,7 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
               <TableHeader>
                 <TableRow>
                   <TableHead>ファイル名</TableHead>
+                  <TableHead>カード種別</TableHead>
                   <TableHead>対象年月</TableHead>
                   <TableHead className="text-right">件数</TableHead>
                   <TableHead>インポート日時</TableHead>
@@ -71,6 +72,7 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
                 {history.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-mono text-sm">{item.fileName}</TableCell>
+                    <TableCell className="text-sm">{item.cardTypeName}</TableCell>
                     <TableCell>{formatYearMonth(item.yearMonth)}</TableCell>
                     <TableCell className="text-right">{item.paymentCount.toLocaleString()}件</TableCell>
                     <TableCell>{formatDate(item.importedAt)}</TableCell>

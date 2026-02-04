@@ -61,7 +61,7 @@ docker compose down       # PostgreSQL停止
 
 ### データベース
 - PostgreSQL on Docker: `localhost:35432`（標準の5432ではない）
-- DATABASE_URL: `postgresql://admin:admin@localhost:35432/goldpoint`
+- DATABASE_URL: `postgresql://admin:admin@localhost:35432/payment`
 
 ### Path Aliases
 - `@/*` → `src/*`

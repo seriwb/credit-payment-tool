@@ -19,6 +19,7 @@ export type ImportResult = {
   fileName: string;
   message: string;
   paymentCount?: number;
+  cardTypeName?: string;
 };
 
 // インポート履歴
@@ -28,4 +29,5 @@ export type ImportHistory = {
   yearMonth: string;
   importedAt: Date;
   paymentCount: number;
+  cardTypeName: string;
 };

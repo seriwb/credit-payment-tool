@@ -70,7 +70,7 @@ export function CategoriesView({ initialCategories }: Props) {
     [editTarget, refreshCategories]
   );
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = useCallback(() => {
     if (!deleteTarget) return;
 
     startTransition(async () => {

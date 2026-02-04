@@ -1,6 +1,6 @@
 "use server";
 
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "@credit-payment-tool/db/prisma/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { generateSearchPatterns } from "./functions";
 
@@ -25,6 +25,7 @@ export type CategoryOption = {
 export type SourceFilterParams = {
   name?: string; // 支払い元名（前方一致）
   categoryId?: string | null; // カテゴリID（nullは未分類）
+  cardTypeId?: string; // カード種別ID
 };
 
 /**
@@ -53,6 +54,16 @@ export async function getPaymentSources(filter?: SourceFilterParams): Promise<Pa
     where.categoryId = filter.categoryId;
   }
 
+  // カード種別フィルター: 該当カードの支払いを持つ支払い元のみ
+  if (filter?.cardTypeId) {
+    where.payments = { some: { cardTypeId: filter.cardTypeId } };
+  }
+
+  // 支払いのカード種別フィルター条件
+  const paymentWhere: Prisma.PaymentWhereInput | undefined = filter?.cardTypeId
+    ? { cardTypeId: filter.cardTypeId }
+    : undefined;
+
   const sources = await prisma.paymentSource.findMany({
     where,
     include: {
@@ -62,6 +73,7 @@ export async function getPaymentSources(filter?: SourceFilterParams): Promise<Pa
           amount: true,
           paymentDate: true,
         },
+        ...(paymentWhere ? { where: paymentWhere } : {}),
       },
     },
     orderBy: { name: "asc" },
