@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CardTypeFilter } from "@/components/shared/card-type-filter";
+import { CardTypeFilter } from "@/components/card-type-filter";
 import type { CardTypeOption } from "@/types/application";
 import { type PaymentDetail, getAvailableYearMonths, getPaymentsByMonth } from "../_lib/actions";
 import { MonthSelector } from "./month-selector";

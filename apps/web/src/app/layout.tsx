@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { MainLayout } from "@/components/layout/main-layout";
 import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
+import { MainLayout } from "./_components/layout/main-layout";
 
 export const metadata: Metadata = {
   title: "カード支払い管理ツール",

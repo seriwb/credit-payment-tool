@@ -2,28 +2,6 @@
 
 Next.js 16 (App Router) を使用したフロントエンドアプリケーション。
 
-## ディレクトリ構成
-
-```
-src/
-├── app/                      # App Router
-│   ├── layout.tsx            # ルートレイアウト
-│   ├── page.tsx              # ダッシュボード
-│   ├── _components/          # ページコンポーネント
-│   ├── _lib/                 # Server Actions
-│   ├── import/               # CSVインポート
-│   ├── payments/             # 支払い一覧
-│   ├── sources/              # 支払い元管理
-│   ├── categories/           # カテゴリ管理
-│   └── analytics/            # 分析・グラフ
-├── components/
-│   ├── ui/                   # shadcn/ui コンポーネント
-│   └── layout/               # レイアウトコンポーネント
-├── hooks/                    # カスタムフック
-├── lib/                      # ユーティリティ
-└── styles/                   # グローバルスタイル
-```
-
 ## 各ページの機能
 
 ### ダッシュボード (`/`)
@@ -68,14 +46,8 @@ src/
 # 開発サーバー起動
 yarn dev
 
-# 型チェック
-yarn check-types
-
-# リント
-yarn lint
-
-# フォーマット
-yarn prettier
+# フォーマット、型、Lintチェックをすべて行う
+yarn code-check
 ```
 
 ## 使用ライブラリ

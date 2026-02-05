@@ -6,41 +6,13 @@
 
 ## 機能
 
-- **CSVインポート**: ヨドバシのCSV明細をインポート（ファイルアップロード・ディレクトリ指定）
+- **CSVインポート**: クレジットカードのCSV明細をインポート（ファイルアップロード・ディレクトリ指定）
 - **支払い一覧**: 月別の支払い履歴を確認
 - **支払い元管理**: 支払い元にカテゴリを割り当てて分類
 - **カテゴリ管理**: 分類用カテゴリのCRUD
 - **分析・可視化**: 月別推移、支払い元別、カテゴリ別のグラフ表示
 - **ダッシュボード**: 今月の概要、前月比、最近のインポート情報
 
-## 技術スタック
-
-### フロントエンド
-- Next.js 16 (App Router)
-- React 19
-- TailwindCSS 4
-- shadcn/ui
-- Recharts（グラフ表示）
-
-### バックエンド
-- Server Actions (Next.js)
-- Prisma 7
-
-### インフラ
-- Docker Compose
-- PostgreSQL 18
-
-## プロジェクト構成
-
-```
-/
-├── apps/
-│   └── web/                 # Webアプリケーション
-├── packages/
-│   └── db/                  # Prismaスキーマ・マイグレーション
-├── docker-compose.yml       # Docker設定
-└── package.json             # ワークスペース設定
-```
 
 ## セットアップ
 
@@ -111,8 +83,3 @@ http://localhost:3000 にアクセス
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:35432/goldpoint?schema=public"
 ```
-
-## ライセンス
-
-Private
-

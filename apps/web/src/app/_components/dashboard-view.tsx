@@ -3,7 +3,7 @@
 import { useCallback, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUp, Upload } from "lucide-react";
-import { CardTypeFilter } from "@/components/shared/card-type-filter";
+import { CardTypeFilter } from "@/components/card-type-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

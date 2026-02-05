@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
-import { CardTypeFilter } from "@/components/shared/card-type-filter";
+import { CardTypeFilter } from "@/components/card-type-filter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CardTypeOption } from "@/types/application";

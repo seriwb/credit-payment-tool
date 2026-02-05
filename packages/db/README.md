@@ -2,41 +2,6 @@
 
 Prisma 7を使用したデータベーススキーマ・マイグレーション管理。
 
-## テーブル構成
-
-### ImportedFile（インポート済みファイル）
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | String | 主キー |
-| fileName | String | ファイル名（ユニーク） |
-| yearMonth | String | 対象年月（YYYYMM） |
-| importedAt | DateTime | インポート日時 |
-
-### PaymentSource（支払い元）
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | String | 主キー |
-| name | String | 支払い元名（ユニーク） |
-| categoryId | String? | カテゴリID |
-
-### Category（カテゴリ）
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | String | 主キー |
-| name | String | カテゴリ名（ユニーク） |
-| displayOrder | Int | 表示順 |
-
-### Payment（支払い明細）
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| id | String | 主キー |
-| importedFileId | String | インポートファイルID |
-| paymentSourceId | String | 支払い元ID |
-| paymentDate | DateTime | 支払い日 |
-| amount | Int | 金額 |
-| quantity | Int | 個数 |
-| yearMonth | String | 年月（YYYYMM、集計用） |
-
 ## コマンド
 
 ```bash

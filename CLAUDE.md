@@ -103,7 +103,6 @@ docker compose down       # PostgreSQL停止
 ### File Naming
 - ケバブケースを使用（例: `component-name.tsx`）
 - メインコンポーネント: ディレクトリ名と同じ
-- ユーティリティ: `[機能名]-utils.ts`
 
 ### Props/Event Rules
 - 全てのpropsに型を定義
@@ -112,7 +111,7 @@ docker compose down       # PostgreSQL停止
 ## Key Directories
 
 - `apps/web/src/app/` - App Routerページ（dashboard, import, payments, sources, categories, analytics）
+- `apps/web/src/components/` - 共通コンポーネント
 - `apps/web/src/components/ui/` - shadcn/uiコンポーネント（編集不可、追加のみ）
-- `apps/web/src/components/layout/` - レイアウトコンポーネント
 - `apps/web/src/lib/` - 共通ユーティリティ（prisma.ts, logger.ts, utils/）
 - `packages/db/prisma/` - Prismaスキーマとマイグレーション
