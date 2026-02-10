@@ -27,17 +27,17 @@
   "dependencies": {
     "@prisma/adapter-pg": "7.3.0",
     "@prisma/client": "7.3.0",
-    "dotenv": "17.2.3",
+    "dotenv": "17.2.4",
     "pg": "8.18.0",
     "prisma": "7.3.0",
     "tsx": "4.21.0"
   },
   "devDependencies": {
-    "@types/node": "25.2.0",
+    "@types/node": "25.2.3",
     "@types/pg": "8.16.0",
-    "@typescript-eslint/eslint-plugin": "8.54.0",
-    "@typescript-eslint/parser": "8.54.0",
-    "eslint": "9.39.2",
+    "@typescript-eslint/eslint-plugin": "8.55.0",
+    "@typescript-eslint/parser": "8.55.0",
+    "eslint": "10.0.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-react": "7.37.5",

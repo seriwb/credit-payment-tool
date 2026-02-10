@@ -1,6 +1,6 @@
-# web - クレジットカード支払い分析ツール フロントエンド
+# web - クレジットカード支払い分析ツール
 
-Next.js 16 (App Router) を使用したフロントエンドアプリケーション。
+Next.js 16 (App Router) を使用したWebアプリケーション。
 
 ## 各ページの機能
 
@@ -57,3 +57,13 @@ yarn code-check
 - **グラフ**: Recharts
 - **スタイル**: TailwindCSS 4
 - **DB**: Prisma Client
+
+
+## Tips
+
+Prismaを使って直接DBからデータを取得する実装となっているため、各page.tsxは基本的に`force-dynamic`とする
+
+```ts
+// ビルド時のプリレンダリングを無効化してデータベース接続エラーを回避
+export const dynamic = "force-dynamic";
+```

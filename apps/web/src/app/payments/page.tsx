@@ -2,6 +2,8 @@ import { getCardTypes } from "@/app/_lib/actions";
 import { PaymentsView } from "./_components/payments-view";
 import { getAvailableYearMonths, getPaymentsByMonth } from "./_lib/actions";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{ month?: string }>;
 };

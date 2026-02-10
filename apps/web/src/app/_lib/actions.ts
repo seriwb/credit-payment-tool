@@ -15,7 +15,6 @@ export async function getDashboardData(cardTypeId?: string): Promise<DashboardDa
 
   // カード種別フィルター条件を構築
   const paymentWhere = cardTypeId ? { yearMonth: currentYearMonth, cardTypeId } : { yearMonth: currentYearMonth };
-
   const prevPaymentWhere = cardTypeId ? { yearMonth: previousYearMonth, cardTypeId } : { yearMonth: previousYearMonth };
 
   // 今月のデータ

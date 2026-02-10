@@ -2,6 +2,8 @@ import { getCardTypes } from "../_lib/actions";
 import { AnalyticsView } from "./_components/analytics-view";
 import { getCategoryAnalytics, getMonthlyAnalytics, getSourceAnalytics, getYearMonthRange } from "./_lib/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AnalyticsPage() {
   const [monthlyData, sourceData, categoryData, yearMonthRange, cardTypes] = await Promise.all([
     getMonthlyAnalytics(),

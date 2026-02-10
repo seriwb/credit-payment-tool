@@ -1,6 +1,8 @@
 import { ImportView } from "./_components/import-view";
 import { getCardTypes, getImportHistory } from "./_lib/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function ImportPage() {
   const [history, cardTypes] = await Promise.all([getImportHistory(), getCardTypes()]);
 

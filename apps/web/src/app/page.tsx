@@ -1,6 +1,8 @@
 import { DashboardView } from "./_components/dashboard-view";
 import { getCardTypes, getDashboardData } from "./_lib/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const [data, cardTypes] = await Promise.all([getDashboardData(), getCardTypes()]);
 

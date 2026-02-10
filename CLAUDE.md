@@ -73,9 +73,13 @@ docker compose down       # PostgreSQL停止
 - **日本語でコメントすること**
 - 文字コードはUTF-8
 - ファイル構成はコロケーションを意識
+- page.tsxのコンポーネントはfunctionで定義し、それ以外のコンポーネントはアロー関数で定義する
+- 全てのpropsに型を定義
+- イベントハンドラーは`on[Event]`形式（例: `onFileUpload`）
 
 ### Next.js Application Rules
 - ESLint、Prettierのルールを守って実装
+- サーバーレンダリングでも、Prismaを使って直接DBからデータを取得したpage.tsxには`force-dynamic`を指定する
 - **コード変更後は必ず以下の順序でチェックを実行すること**
   1. `yarn prettier` - フォーマット自動整形
   2. `yarn lint` - ESLintチェック
@@ -103,10 +107,6 @@ docker compose down       # PostgreSQL停止
 ### File Naming
 - ケバブケースを使用（例: `component-name.tsx`）
 - メインコンポーネント: ディレクトリ名と同じ
-
-### Props/Event Rules
-- 全てのpropsに型を定義
-- イベントハンドラーは`on[Event]`形式（例: `onFileUpload`）
 
 ## Key Directories
 

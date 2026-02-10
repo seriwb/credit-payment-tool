@@ -52,20 +52,6 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  webpack: (config, options) => {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: [
-        {
-          loader: "@svgr/webpack",
-          options: {
-            svgo: false,
-          },
-        },
-      ],
-    });
-    return config;
-  },
   poweredByHeader: false,
   images: {
     minimumCacheTTL: 60,

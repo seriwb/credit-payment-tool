@@ -3,6 +3,8 @@ import { getSourceAnalytics, getYearMonthRange } from "../_lib/actions";
 import { SourcesDetailView } from "./_components/sources-detail-view";
 import { sourcesDetailParamsSchema } from "./_lib/schemas";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{ start?: string; end?: string }>;
 };

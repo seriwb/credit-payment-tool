@@ -3,6 +3,8 @@ import { getCardTypes } from "@/app/_lib/actions";
 import { SourcesView } from "./_components/sources-view";
 import { getCategoryOptions, getPaymentSources } from "./_lib/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function SourcesPage() {
   const [sources, categories, cardTypes] = await Promise.all([
     getPaymentSources(),
