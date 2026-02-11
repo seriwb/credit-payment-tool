@@ -9,6 +9,7 @@
     "web:dev": "yarn workspace web dev",
     "web:build": "yarn workspace @credit-payment-tool/db generate && yarn workspace web build",
     "web:start": "yarn workspace web start",
+    "electron:build:mac": "yarn workspace @credit-payment-tool/db generate && yarn workspace web electron:build:mac",
     "db:dev": "yarn workspace @credit-payment-tool/db dev",
     "db:deploy": "yarn workspace @credit-payment-tool/db deploy",
     "db:generate": "yarn workspace @credit-payment-tool/db generate",

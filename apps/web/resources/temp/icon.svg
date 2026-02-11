@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景グラデーション -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="180" fill="url(#bgGradient)"/>
+
+  <!-- クレジットカード -->
+  <rect x="192" y="312" width="640" height="400" rx="32" fill="#FFFFFF" filter="drop-shadow(0 20px 40px rgba(0,0,0,0.3))"/>
+
+  <!-- 磁気ストライプ -->
+  <rect x="192" y="392" width="640" height="80" fill="#1F2937"/>
+
+  <!-- カード番号（簡略化）-->
+  <rect x="232" y="532" width="120" height="20" rx="4" fill="#E5E7EB"/>
+  <rect x="372" y="532" width="120" height="20" rx="4" fill="#E5E7EB"/>
+  <rect x="512" y="532" width="120" height="20" rx="4" fill="#E5E7EB"/>
+  <rect x="652" y="532" width="80" height="20" rx="4" fill="#E5E7EB"/>
+
+  <!-- チップ -->
+  <g>
+    <rect x="232" y="600" width="80" height="64" rx="8" fill="#FCD34D"/>
+    <line x1="252" y1="600" x2="252" y2="664" stroke="#F59E0B" stroke-width="3"/>
+    <line x1="272" y1="600" x2="272" y2="664" stroke="#F59E0B" stroke-width="3"/>
+    <line x1="292" y1="600" x2="292" y2="664" stroke="#F59E0B" stroke-width="3"/>
+  </g>
+
+  <!-- 決済マーク -->
+  <circle cx="752" cy="632" r="48" fill="#EF4444" opacity="0.85"/>
+  <circle cx="792" cy="632" r="48" fill="#F59E0B" opacity="0.85"/>
+
+  <!-- 日本円マーク -->
+  <text x="512" y="260" font-size="120" font-weight="bold" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif">¥</text>
+</svg>

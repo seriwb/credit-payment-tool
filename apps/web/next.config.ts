@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const isProd = process.env.NODE_ENV === "production";
+const isElectron = process.env.BUILD_TARGET === "electron";
 const origin = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
 const sequreHeaders = [
   { key: "Access-Control-Allow-Origin", value: origin },
@@ -55,7 +57,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     minimumCacheTTL: 60,
-    // unoptimized: true,
+    // Electron環境では画像最適化を無効化
+    unoptimized: isElectron,
     remotePatterns: [
       {
         protocol: "https",
@@ -65,6 +68,17 @@ const nextConfig: NextConfig = {
   },
   output: "standalone",
   reactStrictMode: true,
+  // Electron環境用の設定
+  ...(isElectron && {
+    outputFileTracingRoot: path.join(__dirname, "../../"),
+    outputFileTracingIncludes: {
+      "*": ["public/**/*", ".next/static/**/*"],
+    },
+    serverExternalPackages: ["electron", "@electric-sql/pglite"],
+    // typescript: {
+    //   tsconfigPath: "tsconfig.electron.json",
+    // },
+  }),
   async headers() {
     return [
       {
@@ -75,4 +89,5 @@ const nextConfig: NextConfig = {
   },
 };
 
+if (!isProd) delete nextConfig.output; // for HMR
 export default nextConfig;

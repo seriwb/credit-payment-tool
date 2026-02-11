@@ -38,3 +38,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# electron
+dist-electron/
+pgdata/
+*.dmg
+*.exe
+*.AppImage

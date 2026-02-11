@@ -1,6 +1,7 @@
 # web - クレジットカード支払い分析ツール
 
-Next.js 16 (App Router) を使用したWebアプリケーション。
+クレジットカード支払い分析を行うWebアプリケーションです。  
+Electronデスクトップアプリとしても動作します。
 
 ## 各ページの機能
 
@@ -42,6 +43,8 @@ Next.js 16 (App Router) を使用したWebアプリケーション。
 
 ## 開発
 
+### Web版
+
 ```bash
 # 開発サーバー起動
 yarn dev
@@ -50,6 +53,17 @@ yarn dev
 yarn code-check
 ```
 
+### Electronデスクトップ版
+
+**※現在開発モードのみ対応しています**
+
+```bash
+# Electron開発モード起動
+yarn electron:dev
+```
+
+詳細は [ELECTRON.md](./ELECTRON.md) を参照してください。
+
 ## 使用ライブラリ
 
 - **UI**: shadcn/ui, Radix UI, Lucide React
@@ -57,7 +71,6 @@ yarn code-check
 - **グラフ**: Recharts
 - **スタイル**: TailwindCSS 4
 - **DB**: Prisma Client
-
 
 ## Tips
 

@@ -1,0 +1,48 @@
+appId: com.credit-payment-tool.app
+productName: クレジット支払い管理ツール
+
+directories:
+  output: dist-electron
+  buildResources: resources
+
+files:
+  - "src-electron/**/*"
+  - ".next/standalone/**/*"
+  - "!.next/standalone/**/node_modules/electron"
+  - "!.next/standalone/**/node_modules/electron-*"
+  - "public/**/*"
+
+asarUnpack:
+  - ".next/**/*"
+
+# Mac用設定
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  category: public.app-category.finance
+  icon: resources/icon.icns
+
+dmg:
+  title: クレジット支払い管理ツール
+  icon: resources/icon.icns
+
+# Windows用設定
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.png
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: クレジット支払い管理ツール
+
+extraMetadata:
+  main: src-electron/main.js

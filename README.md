@@ -81,5 +81,5 @@ http://localhost:3000 にアクセス
 `.env`ファイルを作成（`packages/db/.env`）:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:35432/goldpoint?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:35432/cptool?schema=public"
 ```
