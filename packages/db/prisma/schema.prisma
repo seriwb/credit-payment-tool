@@ -1,6 +1,10 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+datasource db {
+  provider = "postgresql"
+}
+
 generator client {
   provider               = "prisma-client"
   output                 = "./generated/prisma"
@@ -8,10 +12,6 @@ generator client {
   generatedFileExtension = "ts"
   importFileExtension    = "ts"
   previewFeatures        = ["fullTextSearchPostgres"]
-}
-
-datasource db {
-  provider = "postgresql"
 }
 
 // カード種別マスタ

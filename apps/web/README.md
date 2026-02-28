@@ -57,6 +57,8 @@ yarn code-check
 
 **※現在開発モードのみ対応しています**
 
+注意：Web版起動後は.nextディレクトリを削除してからでないと起動できません。逆も然り
+
 ```bash
 # Electron開発モード起動
 yarn electron:dev

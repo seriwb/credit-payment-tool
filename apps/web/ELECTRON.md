@@ -75,7 +75,6 @@ yarn electron:build:win
 
 生成物: `dist-electron/クレジット支払い管理ツール Setup *.exe`
 
-
 ## 技術詳細
 
 ### データベース切り替え
@@ -88,9 +87,9 @@ yarn electron:build:win
 ### マイグレーション
 
 - **Web版**: `yarn db:dev` でPrisma Migrateを実行
-- **Electron版**: アプリ起動時に `src/lib/pglite-migrations.ts` が自動実行
+- **Electron版**: アプリ起動時に `src-electron/pglite-migrate.js` が自動実行
 
-新しいマイグレーションを作成したら、`pglite-migrations.ts`も更新してください。
+新しいマイグレーションを作成したら、`src-electron/pglite-migrate.js`の`MIGRATIONS`配列にマイグレーションSQLを追加してください。
 
 ### データ保存場所（Electron）
 
@@ -139,7 +138,7 @@ PGliteのデータは以下の場所に保存されます：
 Electron版で新しいマイグレーションを適用するには：
 
 1. `packages/db/prisma/migrations/`の最新マイグレーションSQLを確認
-2. `src/lib/pglite-migrations.ts`に追加
+2. `src-electron/pglite-migrate.js`の`MIGRATIONS`配列に追加
 3. アプリを再起動
 
 ## 注意事項

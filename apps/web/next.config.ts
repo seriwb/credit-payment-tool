@@ -89,5 +89,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-if (!isProd) delete nextConfig.output; // for HMR
+// if (!isProd) delete nextConfig.output; // for HMR
 export default nextConfig;

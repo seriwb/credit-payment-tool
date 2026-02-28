@@ -60,6 +60,10 @@ async function startNextServer() {
 
 async function createWindow() {
   try {
+    // PGliteマイグレーションを実行（Next.jsサーバー起動前）
+    const { runMigrations } = require("./pglite-migrate");
+    await runMigrations(pgliteDataPath);
+
     const serverUrl = await startNextServer();
 
     mainWindow = new BrowserWindow({
