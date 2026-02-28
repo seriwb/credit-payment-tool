@@ -1,5 +1,6 @@
 .env
 *.bk
+/prisma/generated
 
 # ide
 .vscode
