@@ -10,19 +10,19 @@ type Props = {
   totalAmount: number;
 };
 
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
+
+const formatAmount = (amount: number) => {
+  return `¥${amount.toLocaleString()}`;
+};
+
 export function PaymentsTable({ payments, totalAmount }: Props) {
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
-
-  const formatAmount = (amount: number) => {
-    return `¥${amount.toLocaleString()}`;
-  };
-
   if (payments.length === 0) {
     return (
       <Card>

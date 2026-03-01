@@ -20,6 +20,20 @@ type Props = {
   onDelete: (id: string) => Promise<void>;
 };
 
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const formatYearMonth = (yearMonth: string) => {
+  return `${yearMonth.slice(0, 4)}年${yearMonth.slice(4, 6)}月`;
+};
+
 export function ImportHistoryTable({ history, onDelete }: Props) {
   const [deleteTarget, setDeleteTarget] = useState<ImportHistory | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,20 +47,6 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
     setDeleteTarget(null);
   };
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleString("ja-JP", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatYearMonth = (yearMonth: string) => {
-    return `${yearMonth.slice(0, 4)}年${yearMonth.slice(4, 6)}月`;
-  };
-
   return (
     <>
       <Card>
@@ -55,7 +55,7 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">インポート履歴がありません</p>
+            <div className="py-8 text-center text-muted-foreground">インポート履歴がありません</div>
           ) : (
             <Table>
               <TableHeader>
@@ -74,7 +74,7 @@ export function ImportHistoryTable({ history, onDelete }: Props) {
                     <TableCell className="font-mono text-sm">{item.fileName}</TableCell>
                     <TableCell className="text-sm">{item.cardTypeName}</TableCell>
                     <TableCell>{formatYearMonth(item.yearMonth)}</TableCell>
-                    <TableCell className="text-right">{item.paymentCount.toLocaleString()}件</TableCell>
+                    <TableCell className="text-right">{`${item.paymentCount.toLocaleString()}件`}</TableCell>
                     <TableCell>{formatDate(item.importedAt)}</TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(item)}>
