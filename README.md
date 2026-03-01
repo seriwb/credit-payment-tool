@@ -18,7 +18,7 @@
 
 ### 必要要件
 
-- Node.js 22+
+- Node.js 25+
 - Yarn 4
 - Docker / Docker Compose
 

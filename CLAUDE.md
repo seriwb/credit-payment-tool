@@ -46,7 +46,7 @@ docker compose down       # PostgreSQL停止
 
 ### Monorepo構成
 - **Package Manager**: Yarn 4（npmは使用不可）
-- **Node.js**: 24.1.0
+- **Node.js**: 25.7.0
 - `apps/web` - Next.js 16フロントエンド
 - `packages/db` - Prisma 7データベーススキーマ
 
