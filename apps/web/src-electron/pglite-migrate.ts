@@ -1,5 +1,5 @@
-const { PGlite } = require("@electric-sql/pglite");
-const logger = require("electron-log/main");
+import { PGlite } from "@electric-sql/pglite";
+import logger from "electron-log/main";
 
 // マイグレーション定義: 20260201085703_initial_schema
 const MIGRATION_20260201085703 = `
@@ -142,17 +142,22 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_cardTypeId_fkey" FOREIGN KEY ("c
 `;
 
 // マイグレーション一覧
-const MIGRATIONS = [
+type Migration = {
+  name: string;
+  sql: string;
+};
+
+const MIGRATIONS: Migration[] = [
   { name: "20260201085703_initial_schema", sql: MIGRATION_20260201085703 },
   { name: "20260204000000_add_card_type", sql: MIGRATION_20260204000000 },
 ];
 
 /**
  * PGliteマイグレーションを実行
- * @param {string} dataDir PGliteデータディレクトリ
+ * @param dataDir PGliteデータディレクトリ
  */
-async function runMigrations(dataDir) {
-  let client;
+export async function runMigrations(dataDir: string): Promise<void> {
+  let client: PGlite | undefined;
 
   try {
     logger.info(`[PGlite Migration] データディレクトリ: ${dataDir}`);
@@ -170,7 +175,7 @@ async function runMigrations(dataDir) {
     `);
 
     // 既存DBの検出: categoriesテーブルが存在するが_pglite_migrationsが空の場合、既存データベースとみなす
-    const categoriesCheckResult = await client.query(`
+    const categoriesCheckResult = await client.query<{ exists: boolean }>(`
       SELECT EXISTS (
         SELECT FROM information_schema.tables
         WHERE table_schema = 'public'
@@ -179,8 +184,10 @@ async function runMigrations(dataDir) {
     `);
     const categoriesExists = categoriesCheckResult.rows[0]?.exists === true;
 
-    const migrationCountResult = await client.query("SELECT COUNT(*) as count FROM _pglite_migrations");
-    const migrationCount = parseInt(migrationCountResult.rows[0]?.count || "0", 10);
+    const migrationCountResult = await client.query<{ count: string }>(
+      "SELECT COUNT(*) as count FROM _pglite_migrations"
+    );
+    const migrationCount = parseInt(migrationCountResult.rows[0]?.count ?? "0", 10);
 
     // 既存DBで_pglite_migrationsが空の場合、全マイグレーションを適用済みとしてバックフィル
     if (categoriesExists && migrationCount === 0) {
@@ -197,7 +204,9 @@ async function runMigrations(dataDir) {
     }
 
     // 適用済みマイグレーションを取得
-    const appliedMigrationsResult = await client.query("SELECT name FROM _pglite_migrations ORDER BY name");
+    const appliedMigrationsResult = await client.query<{ name: string }>(
+      "SELECT name FROM _pglite_migrations ORDER BY name"
+    );
     const appliedMigrations = new Set(appliedMigrationsResult.rows.map((row) => row.name));
 
     // 未適用マイグレーションを実行
@@ -239,5 +248,3 @@ async function runMigrations(dataDir) {
     }
   }
 }
-
-module.exports = { runMigrations };

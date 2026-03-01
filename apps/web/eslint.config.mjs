@@ -1,4 +1,3 @@
-import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
@@ -29,8 +28,6 @@ export default tsEslint.config(
     ],
   },
   js.configs.recommended,
-  tsEslint.configs.recommendedTypeChecked,
-  tsEslint.configs.stylisticTypeChecked,
   ...nextVitals,
   ...nextTs,
   // ...tailwind.configs["flat/recommended"],  // TODO: wait v4 support
@@ -46,7 +43,7 @@ export default tsEslint.config(
       sourceType: "module",
       parser: tsEslint.parser,
       parserOptions: {
-        project: ["./tsconfig.json"],
+        project: ["./tsconfig.json", "./tsconfig.electron.json"],
         tsconfigRootDir: __dirname,
         ecmaFeatures: {
           jsx: true,

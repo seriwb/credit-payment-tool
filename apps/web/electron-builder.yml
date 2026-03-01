@@ -6,7 +6,7 @@ directories:
   buildResources: resources
 
 files:
-  - "src-electron/**/*"
+  - "dist-electron/**/*"
   - ".next/standalone/**/*"
   - "!.next/standalone/**/node_modules/electron"
   - "!.next/standalone/**/node_modules/electron-*"
@@ -45,4 +45,4 @@ nsis:
   shortcutName: クレジット支払い管理ツール
 
 extraMetadata:
-  main: src-electron/main.js
+  main: dist-electron/main.js
