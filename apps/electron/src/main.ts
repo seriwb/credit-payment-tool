@@ -21,18 +21,40 @@ process.env.PGLITE_DATA_PATH = pgliteDataPath;
 let mainWindow: BrowserWindow | null = null;
 let server: Server | null = null;
 
+// 開発時: __dirname(= apps/electron/dist/) から apps/web/ を解決
+const webAppDir = path.resolve(__dirname, "../../web");
+
+// 開発モード時のみ .next ディレクトリを削除する
+function cleanNextDir(): void {
+  const nextDir = path.join(webAppDir, ".next");
+  if (fs.existsSync(nextDir)) {
+    fs.rmSync(nextDir, { recursive: true, force: true });
+    logger.info("[Electron] .next ディレクトリを削除しました");
+  }
+}
+
 async function startNextServer(): Promise<string> {
   const isDev = process.env.NODE_ENV === "development";
 
-  // パス設定
+  // 開発時: webAppDir を使用、本番時: ASAR内のパスを使用
   const appDir = isDev
-    ? process.cwd()
-    : path.join(app.getAppPath().replace("app.asar", "app.asar.unpacked"), ".next", "standalone", "apps", "web");
+    ? webAppDir
+    : path.join(
+        app.getAppPath().replace("app.asar", "app.asar.unpacked"),
+        ".next",
+        "standalone",
+        "apps",
+        "web"
+      );
 
   logger.info("[Electron] App directory:", appDir);
   logger.info("[Electron] isDev:", isDev);
 
-  const { default: next } = await import("next");
+  // next モジュールを Web アプリのパスから解決
+  const nextModulePath = isDev
+    ? require.resolve("next", { paths: [webAppDir] })
+    : require.resolve("next", { paths: [appDir] });
+  const { default: next } = await import(nextModulePath);
   const { default: http } = await import("http");
 
   const nextApp = next({
@@ -63,6 +85,11 @@ async function createWindow(): Promise<void> {
     // PGliteマイグレーションを実行（Next.jsサーバー起動前）
     const { runMigrations } = await import("./pglite-migrate");
     await runMigrations(pgliteDataPath);
+
+    // 開発モード時は起動前に .next キャッシュを削除する
+    if (process.env.NODE_ENV === "development") {
+      cleanNextDir();
+    }
 
     const serverUrl = await startNextServer();
 
@@ -115,5 +142,9 @@ app.on("activate", () => {
 app.on("before-quit", () => {
   if (server) {
     server.close();
+  }
+  // 開発モード時は終了後に .next キャッシュを削除する
+  if (process.env.NODE_ENV === "development") {
+    cleanNextDir();
   }
 });

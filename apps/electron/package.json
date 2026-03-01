@@ -1,0 +1,23 @@
+{
+  "name": "electron-app",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "compile": "tsc",
+    "dev": "tsc && BUILD_TARGET=electron NODE_ENV=development electron .",
+    "build": "tsc && yarn workspace web build:electron && electron-builder",
+    "build:mac": "tsc && yarn workspace web build:electron && electron-builder --mac",
+    "build:win": "tsc && yarn workspace web build:electron && electron-builder --win"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.3.15",
+    "electron-log": "5.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "25.3.0",
+    "electron": "40.6.1",
+    "electron-builder": "26.8.1",
+    "typescript": "5.9.3"
+  }
+}

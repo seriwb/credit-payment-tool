@@ -2,15 +2,21 @@ appId: com.credit-payment-tool.app
 productName: クレジット支払い管理ツール
 
 directories:
-  output: dist-electron
+  output: release
   buildResources: resources
 
 files:
-  - "dist-electron/**/*"
-  - ".next/standalone/**/*"
-  - "!.next/standalone/**/node_modules/electron"
-  - "!.next/standalone/**/node_modules/electron-*"
-  - "public/**/*"
+  - "dist/**/*"
+  - from: "../web/.next/standalone"
+    to: ".next/standalone"
+    filter:
+      - "**/*"
+      - "!**/node_modules/electron"
+      - "!**/node_modules/electron-*"
+  - from: "../web/public"
+    to: "public"
+    filter:
+      - "**/*"
 
 asarUnpack:
   - ".next/**/*"
@@ -45,4 +51,4 @@ nsis:
   shortcutName: クレジット支払い管理ツール
 
 extraMetadata:
-  main: dist-electron/main.js
+  main: dist/main.js

@@ -1,0 +1,7 @@
+dist/
+release/
+pgdata/
+*.dmg
+*.exe
+*.AppImage
+node_modules/

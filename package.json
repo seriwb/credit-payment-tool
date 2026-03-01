@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "apps/web",
+    "apps/electron",
     "packages/*"
   ],
   "scripts": {
@@ -9,7 +10,9 @@
     "web:dev": "yarn workspace web dev",
     "web:build": "yarn workspace @credit-payment-tool/db generate && yarn workspace web build",
     "web:start": "yarn workspace web start",
-    "electron:build:mac": "yarn workspace @credit-payment-tool/db generate && yarn workspace web electron:build:mac",
+    "electron:dev": "yarn workspace electron-app dev",
+    "electron:build:mac": "yarn workspace @credit-payment-tool/db generate && yarn workspace electron-app build:mac",
+    "electron:build:win": "yarn workspace @credit-payment-tool/db generate && yarn workspace electron-app build:win",
     "db:dev": "yarn workspace @credit-payment-tool/db dev",
     "db:deploy": "yarn workspace @credit-payment-tool/db deploy",
     "db:generate": "yarn workspace @credit-payment-tool/db generate",

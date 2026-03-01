@@ -1,6 +1,6 @@
-# デスクトップアプリ
+# デスクトップアプリ（Electron）
 
-このNext.jsアプリケーションはElectronのデスクトップアプリとして動作します。
+apps/webのNext.jsアプリケーションは、Electronのデスクトップアプリとしても動作します。
 
 ## 2つの動作モード
 
@@ -19,8 +19,9 @@
 
 ### 1. パッケージのインストール
 
+リポジトリルートで実行します。
+
 ```bash
-cd apps/web
 yarn install
 ```
 
@@ -53,6 +54,8 @@ yarn electron:dev
 
 Electronウィンドウが自動的に開きます。開発モードではDevToolsも自動で開きます。
 
+起動前と終了後に `apps/web/.next/` が自動的に削除されるため、Web版との切り替え時に手動でのクリーンアップは不要です。
+
 ## ビルド
 
 **※現在はビルドした成果物が正しく動作しません**
@@ -65,7 +68,7 @@ Electronウィンドウが自動的に開きます。開発モードではDevToo
 yarn electron:build:mac
 ```
 
-生成物: `dist-electron/クレジット支払い管理ツール-*.dmg`
+生成物: `apps/electron/release/クレジット支払い管理ツール-*.dmg`
 
 #### Windows用
 
@@ -73,7 +76,7 @@ yarn electron:build:mac
 yarn electron:build:win
 ```
 
-生成物: `dist-electron/クレジット支払い管理ツール Setup *.exe`
+生成物: `apps/electron/release/クレジット支払い管理ツール Setup *.exe`
 
 ## 技術詳細
 
@@ -87,9 +90,9 @@ yarn electron:build:win
 ### マイグレーション
 
 - **Web版**: `yarn db:dev` でPrisma Migrateを実行
-- **Electron版**: アプリ起動時に `src-electron/pglite-migrate.js` が自動実行
+- **Electron版**: アプリ起動時に `apps/electron/src/pglite-migrate.ts` が自動実行
 
-新しいマイグレーションを作成したら、`src-electron/pglite-migrate.js`の`MIGRATIONS`配列にマイグレーションSQLを追加してください。
+新しいマイグレーションを作成したら、`apps/electron/src/pglite-migrate.ts`の`MIGRATIONS`配列にマイグレーションSQLを追加してください。
 
 ### データ保存場所（Electron）
 
@@ -98,30 +101,15 @@ PGliteのデータは以下の場所に保存されます：
 - **Mac**: `~/Library/Application Support/credit-payment-tool-app/pgdata`
 - **Windows**: `%APPDATA%\credit-payment-tool-app\pgdata`
 
-### アプリアイコン
-
-`resources/`ディレクトリにアイコンファイルを配置してください：
-
-- `icon.icns` - Mac用
-- `icon.ico` - Windows用
-
-詳細は `resources/README.md` を参照。
-
 ## トラブルシューティング
 
 ### Electron起動時にエラーが出る
 
-1. `.next`ディレクトリを削除して再ビルド:
+PGliteのデータをリセット:
 
-   ```bash
-   rm -rf .next
-   yarn electron:dev
-   ```
-
-2. PGliteのデータをリセット:
-   ```bash
-   rm -rf pgdata
-   ```
+```bash
+rm -rf ~/Library/Application\ Support/credit-payment-tool-app/pgdata
+```
 
 ### ビルドしたアプリが起動しない
 
@@ -138,11 +126,10 @@ PGliteのデータは以下の場所に保存されます：
 Electron版で新しいマイグレーションを適用するには：
 
 1. `packages/db/prisma/migrations/`の最新マイグレーションSQLを確認
-2. `src-electron/pglite-migrate.js`の`MIGRATIONS`配列に追加
+2. `apps/electron/src/pglite-migrate.ts`の`MIGRATIONS`配列に追加
 3. アプリを再起動
 
 ## 注意事項
 
 1. **データ分離**: Web版とElectron版のデータは別々です
-2. **ネイティブモジュール**: sharpなどはElectronビルド時に自動的に再ビルドされます
-3. **セキュリティ**: Electronのコンテキスト分離を有効化しています（`contextIsolation: true`）
+2. **セキュリティ**: Electronのコンテキスト分離を有効化しています（`contextIsolation: true`）

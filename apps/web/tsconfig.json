@@ -39,5 +39,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next", "next.config.ts", "src-electron"]
+  "exclude": ["node_modules", ".next", "next.config.ts"]
 }

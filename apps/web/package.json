@@ -5,12 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "build:electron": "BUILD_TARGET=electron NODE_ENV=production next build --turbopack",
     "start": "next start",
-    "electron:compile": "tsc -p tsconfig.electron.json",
-    "electron:dev": "tsc -p tsconfig.electron.json && BUILD_TARGET=electron NODE_ENV=development electron .",
-    "electron:build": "tsc -p tsconfig.electron.json && BUILD_TARGET=electron NODE_ENV=production next build --turbopack && electron-builder",
-    "electron:build:mac": "tsc -p tsconfig.electron.json && BUILD_TARGET=electron NODE_ENV=production next build --turbopack && electron-builder --mac",
-    "electron:build:win": "tsc -p tsconfig.electron.json && BUILD_TARGET=electron NODE_ENV=production next build --turbopack && electron-builder --win",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "check-types": "next typegen && tsc --noEmit",
@@ -23,7 +19,6 @@
     "ncum": "ncu --target minor --cooldown 2",
     "ncumu": "ncu --target minor -u --cooldown 2"
   },
-  "main": "dist-electron/main.js",
   "dependencies": {
     "@credit-payment-tool/db": "*",
     "@electric-sql/pglite": "0.3.15",
@@ -46,7 +41,6 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "dayjs": "1.11.19",
-    "electron-log": "5.4.3",
     "formidable": "3.5.4",
     "fs": "0.0.2",
     "lucide-react": "0.575.0",
@@ -100,8 +94,6 @@
     "@types/react-infinite-scroller": "1.2.5",
     "@typescript-eslint/eslint-plugin": "8.56.1",
     "@typescript-eslint/parser": "8.56.1",
-    "electron": "40.6.1",
-    "electron-builder": "26.8.1",
     "eslint": "9.39.2",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "10.1.8",
